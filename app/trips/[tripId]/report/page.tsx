@@ -9,6 +9,16 @@ import type { TripWeatherSummary } from '@/lib/weather/types'
 import { riskLevelText } from '@/lib/risk-ui'
 import type { RiskLevel } from '@/types/trip'
 
+const packingSections: Array<{ key: keyof PackingRecommendations; label: string }> = [
+  { key: 'clothing', label: '衣物' },
+  { key: 'footwear', label: '鞋子' },
+  { key: 'rainGear', label: '雨具' },
+  { key: 'sunProtection', label: '防晒' },
+  { key: 'healthAndComfort', label: '健康与舒适' },
+  { key: 'childOrElderlyNotes', label: '儿童/老人' },
+  { key: 'destinationSpecificNotes', label: '目的地提示' },
+]
+
 /* ── 辅助 ── */
 
 const riskChip: Record<RiskLevel, string> = {
@@ -410,18 +420,20 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
                 <h3 className="text-lg font-semibold font-sans">建议携带</h3>
                 <button onClick={() => {
                   const lines: string[] = ['建议携带物品', '']
-                  const labels: Record<string, string> = { clothing: '衣物', footwear: '鞋子', rainGear: '雨具', sunProtection: '防晒', healthAndComfort: '健康与舒适', childOrElderlyNotes: '儿童/老人', destinationSpecificNotes: '目的地提示' }
-                  for (const [k, v] of Object.entries(packing)) { if (Array.isArray(v) && v.length > 0) { lines.push(`${labels[k] || k}：${v.join('、')}`) } }
+                  packingSections.forEach(({ key, label }) => {
+                    const items = packing?.[key]
+                    if (Array.isArray(items) && items.length > 0) lines.push(`${label}：${items.join('、')}`)
+                  })
                   navigator.clipboard.writeText(lines.join('\n'))
                 }} className="text-xs text-[#0071e3] font-medium font-sans hover:underline shrink-0">复制行李建议</button>
               </div>
               <div className="grid sm:grid-cols-2 gap-2">
-                {Object.entries(packing as Record<string, string[]>).map(([key, items]) => {
+                {packingSections.map(({ key, label }) => {
+                  const items = packing?.[key]
                   if (!Array.isArray(items) || items.length === 0) return null
-                  const labels: Record<string, string> = { clothing: '衣物', footwear: '鞋子', rainGear: '雨具', sunProtection: '防晒', healthAndComfort: '健康与舒适', childOrElderlyNotes: '儿童/老人', destinationSpecificNotes: '目的地提示' }
                   return (
                     <div key={key} className="card p-3">
-                      <p className="text-xs font-semibold text-[#86868b] mb-1.5">{labels[key] || key}</p>
+                      <p className="text-xs font-semibold text-[#86868b] mb-1.5">{label}</p>
                       <ul className="space-y-0.5">{items.map((item, j) => <li key={j} className="text-sm">{item}</li>)}</ul>
                     </div>
                   )
