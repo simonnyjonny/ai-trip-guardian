@@ -279,7 +279,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
     lines.push('', '【修改建议】')
     report.recommendations?.forEach((r) => lines.push(`- ${r.title}: ${r.details}`))
     lines.push('', '【AI 推荐调整版行程】')
-    const opt: OptimizedItineraryDay[] = report.optimized_itinerary || []
+    const opt = report.optimized_itinerary
     opt.forEach((day) => {
       lines.push(`Day ${day.day_index} · ${day.theme}`)
       day.items?.forEach((it: OptimizedItineraryItem) => lines.push(`  ${it.time || '--:--'}  ${it.title}`))
@@ -315,7 +315,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
   )
 
   const dims = report.dimension_scores
-  const opt: OptimizedItineraryDay[] = report.optimized_itinerary || []
+  const opt = report.optimized_itinerary
   const days = report.daily_analysis || []
 
   return (
