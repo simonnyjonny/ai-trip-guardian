@@ -57,6 +57,7 @@ export function generateMockWeather(dest: string, startDate?: string, endDate?: 
 
   return {
     destination: dest,
+    provider: "mock",
     forecastSource: "mock",
     forecastReliability,
     daily: days.map((d) => ({

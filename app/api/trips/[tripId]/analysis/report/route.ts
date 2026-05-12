@@ -41,7 +41,7 @@ export async function POST(
         id: uuidv4(),
         trip_id: tripId,
         destination: trip.destination,
-        provider: weatherSummary.provider || weatherSummary.forecastSource,
+        provider: weatherSummary.provider,
         forecast_source: weatherSummary.forecastSource,
         forecast_reliability: weatherSummary.forecastReliability,
         forecast: weatherSummary,

@@ -48,6 +48,7 @@ export async function fetchOpenWeather(params: {
 
   return {
     destination: params.destination,
+    provider: "openweather",
     forecastSource: "openweather",
     forecastReliability: reliability,
     daily,

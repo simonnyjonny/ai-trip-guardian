@@ -1,3 +1,5 @@
+export type WeatherProviderName = "amap" | "openweather" | "mock" | "seasonal";
+
 export interface DailyWeatherForecast {
   date: string;
   minTempC?: number;
@@ -11,7 +13,8 @@ export interface DailyWeatherForecast {
 
 export interface TripWeatherSummary {
   destination: string;
-  forecastSource: "openweather" | "mock" | "seasonal";
+  provider: WeatherProviderName;
+  forecastSource: string;
   forecastReliability: "high" | "medium" | "low";
   daily: DailyWeatherForecast[];
   summary: string;
