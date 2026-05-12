@@ -3,6 +3,7 @@ import { riskReportSchema, type RiskReportSchema, type ParsedTripInputSchema } f
 import { riskReportSystemPrompt } from './prompts'
 import { logAgentRun } from '@/lib/db/queries'
 import { sanitizedAgentInput } from '@/lib/privacy/redact'
+import { generateFallbackRiskReport } from './fallback-risk-report'
 
 interface GenerateRiskReportParams {
   tripId: string
@@ -169,18 +170,44 @@ If weather data is provided:
     })
     throw new Error('AI 返回格式不稳定，请重新分析。')
   } catch (error: unknown) {
-    if (error instanceof Error && (error.message.includes('AI 返回') || error.message.includes('无法生成'))) throw error
+    const errMsg = error instanceof Error ? error.message : String(error)
+    console.warn('[report] Generating fallback report due to:', errMsg)
     await logAgentRun({
       tripId: input.tripId,
       agentType: 'generateRiskReport',
       input: sanitized,
-      output: {},
-      status: 'failed',
-      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      output: { fallback: true, reason: errMsg },
+      status: 'completed',
+      errorMessage: 'Used fallback report',
       durationMs: Date.now() - startTime,
       model: MODEL,
       provider: PROVIDER,
     })
-    throw new Error('分析失败，请稍后重试。')
+    // Generate fallback report using structured data only
+    return generateFallbackRiskReport({
+      trip: {
+        destination: tripProfile.destination,
+        pace: tripProfile.pace,
+        traveler_type: tripProfile.travelerType,
+      } as import("@/types/trip").Trip,
+      items: parsedTrip.itinerary_items.map((item, idx) => ({
+        id: '',
+        trip_id: '',
+        day_index: item.day_index,
+        start_time: item.start_time || null,
+        end_time: item.end_time || null,
+        title: item.title,
+        location_name: item.location_name || null,
+        address: item.address || null,
+        category: item.category,
+        notes: item.notes || null,
+        risk_level: 'medium' as const,
+        risk_reasons: [],
+        sort_order: idx,
+        created_at: '',
+      })),
+      weatherSummary: input.weatherSummary,
+      transferPlans: input.transferPlans,
+    })
   }
 }

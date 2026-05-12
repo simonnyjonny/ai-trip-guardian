@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import { parseAiJson } from './json'
 
 const AI_PROVIDER = process.env.AI_PROVIDER || 'openai'
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o'
@@ -69,5 +70,5 @@ export async function aiRequest<T>({
     throw new Error('AI returned empty response')
   }
 
-  return JSON.parse(content) as T
+  return parseAiJson<T>(content)
 }
