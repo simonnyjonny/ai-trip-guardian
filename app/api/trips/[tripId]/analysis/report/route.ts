@@ -85,7 +85,7 @@ export async function POST(
     })
 
     // Extract packing recommendations from AI output
-    const packingRecs = (reportResult as unknown as Record<string, unknown>).packing_recommendations || {}
+    const packingRecs = reportResult.packing_recommendations ?? { clothing: [], footwear: [], rainGear: [], sunProtection: [], healthAndComfort: [], childOrElderlyNotes: [], destinationSpecificNotes: [] }
 
     // Build weather + packing for DB
     const weatherData = {
