@@ -1,4 +1,14 @@
+export type TripInputMode = "itinerary" | "wish";
 export type TripRegion = "domestic" | "outbound" | "auto";
+
+export interface TripWishInput {
+  destination: string; startDate?: string | null; endDate?: string | null;
+  durationDays?: number | null; travelers?: string | null;
+  pace?: "relaxed" | "normal" | "packed"; tripRegion?: TripRegion;
+  primaryTransport?: PrimaryTransport; travelStyles: string[];
+  mustVisitPlaces: string[]; optionalPlaces: string[];
+  thingsToDo: string[]; avoid: string[]; specialNeeds: string[];
+}
 
 export type PrimaryTransport =
   | "flight" | "train" | "self_drive"
@@ -47,6 +57,9 @@ export interface Trip {
   language_level: LanguageLevel;
   special_needs: string[];
   raw_input: string | null;
+  input_mode: TripInputMode;
+  wish_input: TripWishInput;
+  generated_itinerary: unknown[];
   trip_region: TripRegion;
   primary_transport: PrimaryTransport;
   status: TripStatus;

@@ -15,7 +15,9 @@ export async function createTrip(input: {
   tripRegion?: string
   primaryTransport?: string
   specialNeeds: string[]
-  rawInput: string
+  rawInput?: string
+  inputMode?: string
+  wishInput?: Record<string, unknown>
   userId?: string
 }): Promise<Trip> {
   const id = uuidv4()
@@ -36,7 +38,10 @@ export async function createTrip(input: {
       trip_region: input.tripRegion || 'auto',
       primary_transport: input.primaryTransport || 'unknown',
       special_needs: input.specialNeeds,
-      raw_input: input.rawInput,
+      raw_input: input.rawInput || null,
+      input_mode: input.inputMode || 'itinerary',
+      wish_input: input.wishInput || {},
+      generated_itinerary: [],
       status: 'draft',
       created_at: now,
       updated_at: now,

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getTrip, getItineraryItems, setAnalysisStage, saveItineraryItems, hashInput } from '@/lib/db/queries'
 import { parseTripInput } from '@/lib/ai/parse-trip'
+import { generateDraftItinerary } from '@/lib/ai/generate-draft-itinerary'
+import { convertGeneratedItineraryToItems } from '@/lib/itinerary/convert-generated'
+import { supabaseAdmin } from '@/lib/db/supabase'
 import { userError } from '@/lib/errors'
 import { checkRateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
 import { trackEvent } from '@/lib/analytics'
@@ -43,23 +46,49 @@ export async function POST(
 
     await setAnalysisStage(tripId, 'parsing')
 
-    const parsed = await parseTripInput({
-      tripId,
-      rawInput: trip.raw_input || '',
-      destination: trip.destination,
-      startDate: trip.start_date || undefined,
-      endDate: trip.end_date || undefined,
-      travelerType: trip.traveler_type,
-      pace: trip.pace,
-      languageLevel: trip.language_level,
-      specialNeeds: (trip.special_needs || []) as string[],
-    })
+    const isWishMode = ((trip as Record<string, unknown>).input_mode as string) === 'wish'
+    let parsedItems: Array<{ day_index: number; start_time: string | null; end_time: string | null; title: string; location_name: string | null; address: string | null; category: string; notes: string | null }> = []
 
-    const items = await saveItineraryItems(tripId, parsed.itinerary_items.map((item) => ({
-      day_index: item.day_index, start_time: item.start_time, end_time: item.end_time,
-      title: item.title, location_name: item.location_name, address: item.address,
-      category: item.category, notes: item.notes,
-    })))
+    if (isWishMode) {
+      const wishInput = ((trip as Record<string, unknown>).wish_input || {}) as Record<string, unknown>
+      const draft = await generateDraftItinerary({
+        destination: (wishInput.destination as string) || trip.destination,
+        travelers: wishInput.travelers as string || undefined,
+        pace: wishInput.pace as string || trip.pace,
+        durationDays: wishInput.durationDays as number || undefined,
+        travelStyles: (wishInput.travelStyles as string[]) || [],
+        mustVisitPlaces: (wishInput.mustVisitPlaces as string[]) || [],
+        optionalPlaces: (wishInput.optionalPlaces as string[]) || [],
+        thingsToDo: (wishInput.thingsToDo as string[]) || [],
+        avoid: (wishInput.avoid as string[]) || [],
+        specialNeeds: (wishInput.specialNeeds as string[]) || (trip.special_needs || []) as string[],
+        tripRegion: wishInput.tripRegion as string || trip.trip_region,
+      })
+
+      // Save generated itinerary
+      await supabaseAdmin.from('trips').update({ generated_itinerary: draft }).eq('id', tripId).then(() => {}, () => {})
+
+      parsedItems = convertGeneratedItineraryToItems(draft)
+    } else {
+      const parsed = await parseTripInput({
+        tripId,
+        rawInput: trip.raw_input || '',
+        destination: trip.destination,
+        startDate: trip.start_date || undefined,
+        endDate: trip.end_date || undefined,
+        travelerType: trip.traveler_type,
+        pace: trip.pace,
+        languageLevel: trip.language_level,
+        specialNeeds: (trip.special_needs || []) as string[],
+      })
+      parsedItems = parsed.itinerary_items.map((item) => ({
+        day_index: item.day_index, start_time: item.start_time, end_time: item.end_time,
+        title: item.title, location_name: item.location_name, address: item.address || null,
+        category: item.category, notes: item.notes,
+      }))
+    }
+
+    const items = await saveItineraryItems(tripId, parsedItems)
 
     await setAnalysisStage(tripId, 'parsed')
 

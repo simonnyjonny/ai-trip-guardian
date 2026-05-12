@@ -109,20 +109,61 @@ export const riskReportSchema = z.object({
 });
 
 // API input schema
+// Wish Mode schemas
+export const tripWishInputSchema = z.object({
+  destination: z.string().min(1),
+  startDate: z.string().nullable().optional(),
+  endDate: z.string().nullable().optional(),
+  durationDays: z.number().int().positive().nullable().optional(),
+  travelers: z.string().nullable().optional(),
+  pace: z.enum(["relaxed", "normal", "packed"]).default("relaxed"),
+  tripRegion: z.enum(["domestic", "outbound", "auto"]).default("auto"),
+  primaryTransport: z.enum(["flight", "train", "self_drive", "public_transport", "taxi", "mixed", "unknown"]).default("unknown"),
+  travelStyles: z.array(z.string()).default([]),
+  mustVisitPlaces: z.array(z.string()).default([]),
+  optionalPlaces: z.array(z.string()).default([]),
+  thingsToDo: z.array(z.string()).default([]),
+  avoid: z.array(z.string()).default([]),
+  specialNeeds: z.array(z.string()).default([]),
+});
+
+export const generatedItineraryItemSchema = z.object({
+  timeOfDay: z.enum(["morning", "late_morning", "afternoon", "evening", "flexible"]).optional(),
+  title: z.string(),
+  locationName: z.string().nullable().optional(),
+  category: itineraryCategorySchema.default("activity"),
+  why: z.string(),
+  estimatedIntensity: z.enum(["low", "medium", "high"]).optional(),
+  notes: z.array(z.string()).default([]),
+});
+
+export const generatedItineraryDaySchema = z.object({
+  dayIndex: z.number().int().positive(),
+  theme: z.string(),
+  userWishesSatisfied: z.array(z.string()).default([]),
+  items: z.array(generatedItineraryItemSchema).default([]),
+  restBuffers: z.array(z.string()).default([]),
+  riskAvoidanceNotes: z.array(z.string()).default([]),
+});
+
+export const generatedItinerarySchema = z.array(generatedItineraryDaySchema);
+
+export type GeneratedItineraryDay = z.infer<typeof generatedItineraryDaySchema>;
+
+// API input schema — supports both modes
 export const createTripInputSchema = z.object({
   destination: z.string().min(1, "请输入目的地"),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
-  travelerType: z.enum([
-    "solo", "couple", "friends", "family",
-    "with_children", "with_parents", "business", "other",
-  ]),
-  pace: z.enum(["relaxed", "normal", "packed"]),
-  languageLevel: z.enum(["strong", "medium", "weak"]),
+  travelerType: z.enum(["solo", "couple", "friends", "family", "with_children", "with_parents", "business", "other"]).default("solo"),
+  pace: z.enum(["relaxed", "normal", "packed"]).default("relaxed"),
+  languageLevel: z.enum(["strong", "medium", "weak"]).default("medium"),
   tripRegion: z.enum(["domestic", "outbound", "auto"]).default("auto"),
   primaryTransport: z.enum(["flight", "train", "self_drive", "public_transport", "taxi", "mixed", "unknown"]).default("unknown"),
   specialNeeds: z.array(z.string()).default([]),
-  rawInput: z.string().min(10, "行程描述至少需要10个字符"),
+  inputMode: z.enum(["itinerary", "wish"]).default("wish"),
+  rawInput: z.string().optional(),
+  wishInput: tripWishInputSchema.optional(),
 });
 
 export type ParsedTripInputSchema = z.infer<typeof parsedTripInputSchema>;
