@@ -29,7 +29,7 @@ export async function POST(
       return NextResponse.json({ error: '行程内容过长，请先精简到航班、酒店、每日安排和重要预约。' }, { status: 400 })
     }
 
-    const attempts = (trip as Record<string, unknown>).analysis_attempt_count as number || 0
+    const attempts = trip.analysis_attempt_count || 0
     if (attempts >= env.MAX_ANALYSIS_ATTEMPTS) {
       return NextResponse.json({ error: '本次行程已达到重新分析次数上限，请创建新的行程。' }, { status: 400 })
     }

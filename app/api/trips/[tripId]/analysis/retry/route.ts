@@ -11,7 +11,7 @@ export async function POST(
     const trip = await getTrip(tripId)
     if (!trip) return userError('trip_not_found', 404)
 
-    const stage = (trip as Record<string, unknown>).analysis_stage as string
+    const stage = trip.analysis_stage || 'not_started'
     if (stage !== 'failed') {
       return NextResponse.json({ error: '当前状态无需重试' }, { status: 400 })
     }

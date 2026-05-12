@@ -32,9 +32,9 @@ export async function GET(
         overall_score: report.overall_score,
         overall_level: report.overall_level,
         summary: report.summary,
-        dimension_scores: (report as Record<string, unknown>).dimension_scores,
+        dimension_scores: report.dimension_scores ?? {},
         top_risks: report.top_risks,
-        optimized_itinerary: (report as Record<string, unknown>).optimized_itinerary,
+        optimized_itinerary: report.optimized_itinerary ?? [],
       },
     })
   } catch (error: unknown) {

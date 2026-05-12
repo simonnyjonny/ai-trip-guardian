@@ -41,6 +41,13 @@ export interface Trip {
   special_needs: string[];
   raw_input: string | null;
   status: TripStatus;
+  // Sprint 2 analysis fields
+  analysis_stage?: string;
+  analysis_error?: string | null;
+  analysis_started_at?: string | null;
+  analysis_completed_at?: string | null;
+  analysis_attempt_count?: number;
+  last_analyzed_input_hash?: string | null;
   created_at: string;
   updated_at: string;
 }
