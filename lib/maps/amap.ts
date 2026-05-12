@@ -1,5 +1,5 @@
 import type { RouteOption } from "./types"
-import { generateDeepLink } from "./links"
+import { generateAmapLink } from "./links"
 
 export async function fetchAmapRoute(params: {
   origin: string
@@ -49,7 +49,7 @@ export async function fetchAmapRoute(params: {
     pros: ["最快", "直达", "高德实时路况"],
     cons: ["高峰期可能拥堵", "费用较高"],
     warnings: [],
-    deepLink: generateDeepLink({ provider: "amap", origin: params.origin, destination: params.destination }),
+    deepLink: generateAmapLink(params.origin, params.destination),
     limitations: [],
   }]
 }

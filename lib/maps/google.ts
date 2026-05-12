@@ -1,5 +1,5 @@
 import type { RouteOption } from "./types"
-import { generateDeepLink, generateUberDeepLink } from "./links"
+import { generateGoogleMapsLink, generateUberDeepLink } from "./links"
 
 export async function fetchGoogleRoute(params: {
   origin: string
@@ -32,7 +32,7 @@ export async function fetchGoogleRoute(params: {
     pros: ["最快", "直达", "实时路况"],
     cons: [],
     warnings: [],
-    deepLink: generateDeepLink({ provider: "google", origin: params.origin, destination: params.destination }),
+    deepLink: generateGoogleMapsLink(params.origin, params.destination),
     limitations: [],
   }
 
