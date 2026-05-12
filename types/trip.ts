@@ -22,6 +22,7 @@ export type RiskLevel = "low" | "medium" | "medium_high" | "high";
 
 export type ItineraryCategory =
   | "flight"
+  | "train"
   | "hotel"
   | "activity"
   | "restaurant"

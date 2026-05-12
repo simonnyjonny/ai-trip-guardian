@@ -3,7 +3,7 @@ import { z } from "zod";
 export const riskLevelSchema = z.enum(["low", "medium", "medium_high", "high"]);
 
 export const itineraryCategorySchema = z.enum([
-  "flight", "hotel", "activity", "restaurant", "transport", "shopping", "rest", "other",
+  "flight", "train", "hotel", "activity", "restaurant", "transport", "shopping", "rest", "other",
 ]);
 
 export const parsedItineraryItemSchema = z.object({

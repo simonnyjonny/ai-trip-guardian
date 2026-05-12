@@ -15,7 +15,9 @@ Important rules:
 6. Use 24-hour time format when possible.
 7. If no exact time is provided, use null.
 8. Classify each item into one category:
-   flight, hotel, activity, restaurant, transport, shopping, rest, other.
+   flight, train, hotel, activity, restaurant, transport, shopping, rest, other.
+   Use "train" for high-speed rail, bullet train, Shinkansen, Eurostar, 高铁, 火车, 新干线, intercity rail.
+   Use "transport" for taxi, subway, bus, ride-hailing, or unspecified transit.
 9. If the user mentions elderly parents, children, wheelchair, allergies, dietary restrictions, or low walking tolerance, do not add them as itinerary items. These belong to traveler profile, not itinerary.
 10. Be conservative. Structured accuracy is more important than completeness.
 
