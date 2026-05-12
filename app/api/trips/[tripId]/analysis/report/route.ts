@@ -32,6 +32,7 @@ export async function POST(
         destination: trip.destination,
         startDate: trip.start_date || undefined,
         endDate: trip.end_date || undefined,
+        tripRegion: (trip as Record<string, unknown>).trip_region as string || 'auto',
       })
       trackEvent({ tripId, eventName: 'weather_fetch_completed', properties: { source: weatherSummary.forecastSource, reliability: weatherSummary.forecastReliability } })
 
@@ -40,6 +41,7 @@ export async function POST(
         id: uuidv4(),
         trip_id: tripId,
         destination: trip.destination,
+        provider: weatherSummary.provider || weatherSummary.forecastSource,
         forecast_source: weatherSummary.forecastSource,
         forecast_reliability: weatherSummary.forecastReliability,
         forecast: weatherSummary,
@@ -75,6 +77,8 @@ export async function POST(
         pace: trip.pace,
         languageLevel: trip.language_level,
         specialNeeds: (trip.special_needs || []) as string[],
+        tripRegion: (trip as Record<string, unknown>).trip_region as string || 'auto',
+        primaryTransport: (trip as Record<string, unknown>).primary_transport as string || 'unknown',
       },
       parsedTrip: parsed,
       weatherSummary,

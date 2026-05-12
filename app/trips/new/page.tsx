@@ -53,6 +53,8 @@ export default function CreateTripPage() {
   const [travelerType, setTravelerType] = useState('solo')
   const [pace, setPace] = useState('normal')
   const [languageLevel, setLanguageLevel] = useState('medium')
+  const [tripRegion, setTripRegion] = useState('auto')
+  const [primaryTransport, setPrimaryTransport] = useState('unknown')
   const [specialNeeds, setSpecialNeeds] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -65,7 +67,7 @@ export default function CreateTripPage() {
     try {
       const res = await fetch('/api/trips', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawInput, destination, startDate: startDate || undefined, endDate: endDate || undefined, travelerType, pace, languageLevel, specialNeeds }),
+        body: JSON.stringify({ rawInput, destination, startDate: startDate || undefined, endDate: endDate || undefined, travelerType, pace, languageLevel, tripRegion, primaryTransport, specialNeeds }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || '创建失败')
@@ -160,6 +162,36 @@ export default function CreateTripPage() {
                     <div>
                       <label className="block text-xs font-semibold text-[#86868b] mb-1.5 font-sans">外语能力</label>
                       <Select options={LANGUAGES} value={languageLevel} onChange={setLanguageLevel} />
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* ── 旅行类型与交通 ── */}
+                <fieldset>
+                  <div className="mb-5">
+                    <legend className="text-[17px] font-semibold text-[#1d1d1f] font-sans mb-1">旅行类型与交通</legend>
+                    <p className="text-sm text-[#86868b] font-sans">帮助 AI 判断是国内还是出境，以及主要出行方式。</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#86868b] mb-1.5 font-sans">旅行类型</label>
+                      <Select options={[
+                        { value: 'auto', label: '自动判断' },
+                        { value: 'domestic', label: '国内旅行' },
+                        { value: 'outbound', label: '出境旅行' },
+                      ]} value={tripRegion} onChange={setTripRegion} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#86868b] mb-1.5 font-sans">主要交通方式</label>
+                      <Select options={[
+                        { value: 'unknown', label: '暂不确定' },
+                        { value: 'flight', label: '飞机' },
+                        { value: 'train', label: '高铁 / 火车' },
+                        { value: 'self_drive', label: '自驾' },
+                        { value: 'public_transport', label: '城市公共交通' },
+                        { value: 'taxi', label: '打车' },
+                        { value: 'mixed', label: '混合' },
+                      ]} value={primaryTransport} onChange={setPrimaryTransport} />
                     </div>
                   </div>
                 </fieldset>

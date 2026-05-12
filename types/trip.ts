@@ -1,3 +1,9 @@
+export type TripRegion = "domestic" | "outbound" | "auto";
+
+export type PrimaryTransport =
+  | "flight" | "train" | "self_drive"
+  | "public_transport" | "taxi" | "mixed" | "unknown";
+
 export type TravelerType =
   | "solo"
   | "couple"
@@ -40,6 +46,8 @@ export interface Trip {
   language_level: LanguageLevel;
   special_needs: string[];
   raw_input: string | null;
+  trip_region: TripRegion;
+  primary_transport: PrimaryTransport;
   status: TripStatus;
   // Sprint 2 analysis fields
   analysis_stage?: string;

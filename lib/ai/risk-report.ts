@@ -14,6 +14,8 @@ interface GenerateRiskReportParams {
     pace: string
     languageLevel: string
     specialNeeds: string[]
+    tripRegion?: string
+    primaryTransport?: string
   }
   parsedTrip: ParsedTripInputSchema
   weatherSummary?: {
@@ -58,6 +60,8 @@ Traveler type: ${travelerLabels[tripProfile.travelerType] || tripProfile.travele
 Pace: ${tripProfile.pace}
 Language level: ${tripProfile.languageLevel}
 Special needs: ${tripProfile.specialNeeds.join(', ') || 'none'}
+Trip region: ${tripProfile.tripRegion || 'auto'} (domestic=China domestic, outbound=international)
+Primary transport: ${tripProfile.primaryTransport || 'unknown'}
 
 Structured Itinerary:
 ${itineraryText}
@@ -75,6 +79,16 @@ Limitations: ${input.weatherSummary.limitations.join('; ')}
 ` : ''}
 
 Please analyze this trip and generate a comprehensive risk report.
+
+If trip_region is domestic (China):
+- Use Chinese travel context (high-speed rail, ID card, scenic area reservation, peak holiday crowding)
+- Do NOT generate foreign-language scripts
+- Mention domestic hotel check-in, self-driving parking, subway/city bus where relevant
+
+If trip_region is outbound:
+- Consider passport, visa, airport transfer, language barriers
+- Generate English/local-language communication scripts
+- Mention overseas hotel late check-in, Uber/taxi, public transit
 
 If weather data is provided:
 - Incorporate it into daily_analysis (weather risks for outdoor activities)

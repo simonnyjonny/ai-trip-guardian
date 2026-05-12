@@ -119,6 +119,8 @@ export const createTripInputSchema = z.object({
   ]),
   pace: z.enum(["relaxed", "normal", "packed"]),
   languageLevel: z.enum(["strong", "medium", "weak"]),
+  tripRegion: z.enum(["domestic", "outbound", "auto"]).default("auto"),
+  primaryTransport: z.enum(["flight", "train", "self_drive", "public_transport", "taxi", "mixed", "unknown"]).default("unknown"),
   specialNeeds: z.array(z.string()).default([]),
   rawInput: z.string().min(10, "行程描述至少需要10个字符"),
 });

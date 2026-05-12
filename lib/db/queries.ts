@@ -12,6 +12,8 @@ export async function createTrip(input: {
   travelerType: string
   pace: string
   languageLevel: string
+  tripRegion?: string
+  primaryTransport?: string
   specialNeeds: string[]
   rawInput: string
   userId?: string
@@ -31,6 +33,8 @@ export async function createTrip(input: {
       traveler_type: input.travelerType,
       pace: input.pace,
       language_level: input.languageLevel,
+      trip_region: input.tripRegion || 'auto',
+      primary_transport: input.primaryTransport || 'unknown',
       special_needs: input.specialNeeds,
       raw_input: input.rawInput,
       status: 'draft',
