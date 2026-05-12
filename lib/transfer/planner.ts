@@ -11,7 +11,7 @@ export async function generateTransferPlans(params: {
   const points = extractTransferPoints(params.items)
   const plans: TransferPlan[] = []
 
-  const tripRegion = (params.trip as Record<string, unknown>).trip_region as string || "auto"
+  const tripRegion = params.trip.trip_region ?? "auto"
 
   // Arrival → Hotel
   if (points.arrivalOrigin && points.firstHotel) {
