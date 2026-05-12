@@ -32,7 +32,7 @@ export async function POST(
         destination: trip.destination,
         startDate: trip.start_date || undefined,
         endDate: trip.end_date || undefined,
-        tripRegion: (trip as Record<string, unknown>).trip_region as string || 'auto',
+        tripRegion: trip.trip_region || 'auto',
       })
       trackEvent({ tripId, eventName: 'weather_fetch_completed', properties: { source: weatherSummary.forecastSource, reliability: weatherSummary.forecastReliability } })
 
@@ -77,15 +77,15 @@ export async function POST(
         pace: trip.pace,
         languageLevel: trip.language_level,
         specialNeeds: (trip.special_needs || []) as string[],
-        tripRegion: (trip as Record<string, unknown>).trip_region as string || 'auto',
-        primaryTransport: (trip as Record<string, unknown>).primary_transport as string || 'unknown',
+        tripRegion: trip.trip_region ?? 'auto',
+        primaryTransport: trip.primary_transport ?? 'unknown',
       },
       parsedTrip: parsed,
       weatherSummary,
     })
 
     // Extract packing recommendations from AI output
-    const packingRecs = (reportResult as Record<string, unknown>).packing_recommendations || {}
+    const packingRecs = (reportResult as unknown as Record<string, unknown>).packing_recommendations || {}
 
     // Build weather + packing for DB
     const weatherData = {
