@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
+  --font-display: "Songti SC", "Noto Serif SC", "STSong", "SimSun", "Times New Roman", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Base */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
+
+/* Font families */
+.font-serif { font-family: var(--font-display); }
+.font-sans { font-family: var(--font-body); }
+
+/* Typography scale */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 8vw, 7rem);
+  font-weight: 500;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.section-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0071e3;
+}
+
+.body-lg {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #86868b;
+}
+
+/* Glass Nav */
+.glass-nav {
+  background: rgba(245, 245, 247, 0.7);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 1rem; font-weight: 600;
+  color: #ffffff; background: #0071e3;
+  border-radius: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,113,227,0.28);
+}
+.btn-primary:hover { background: #0077ed; box-shadow: 0 6px 20px rgba(0,113,227,0.36); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 1rem; font-weight: 500;
+  color: #1d1d1f; background: #e8e8ed;
+  border-radius: 0.875rem; transition: all 0.2s ease;
+}
+.btn-secondary:hover { background: #dcdce0; }
+
+/* Input */
+.input-apple {
+  width: 100%; padding: 0.875rem 1rem;
+  font-size: 0.9375rem; color: #1d1d1f;
+  background: #ffffff; border: 1.5px solid #d2d2d7;
+  border-radius: 0.875rem; outline: none;
+  transition: all 0.15s ease;
+}
+.input-apple:focus { border-color: #0071e3; box-shadow: 0 0 0 4px rgba(0,113,227,0.1); }
+.input-apple::placeholder { color: #86868b; }
+
+/* Badge */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600;
+  border-radius: 999px;
+}
+
+/* Section spacing */
+.section { padding: 6rem 1.25rem; }
+@media (min-width: 768px) { .section { padding: 8rem 2rem; } }

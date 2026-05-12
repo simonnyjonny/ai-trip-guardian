@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ AI Trip Guardian
 
-## Getting Started
+> 出国自由行，别等出问题才发现行程有坑。
 
-First, run the development server:
+AI Trip Guardian 是一个旅行风险体检工具。上传你的行程，AI 帮你提前发现时间冲突、路线不合理、人群不适配、语言障碍和异常预案缺失等问题。
+
+## MVP 功能
+
+- ✅ 粘贴行程文本，自动解析为结构化行程
+- ✅ AI 全面风险分析（12 个评估维度）
+- ✅ 每日风险等级 + 步行强度评估
+- ✅ 最重要的 5 个风险排名
+- ✅ 修改建议 + 异常预案
+- ✅ 多语言沟通话术（中/英/当地语言）
+- ✅ Mobile-first 响应式设计
+- ✅ 匿名使用，无需注册
+
+## 技术栈
+
+| 类型 | 技术 |
+|------|------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript (strict mode) |
+| Styling | Tailwind CSS 4 |
+| Database | Supabase / PostgreSQL |
+| AI | OpenAI GPT-4o |
+| Validation | Zod |
+| Deployment | Vercel |
+
+## 快速开始
+
+### 1. 安装依赖
+
+```bash
+npm install
+```
+
+### 2. 配置环境变量
+
+```bash
+cp .env.example .env.local
+```
+
+编辑 `.env.local`：
+
+```env
+OPENAI_API_KEY=sk-your-key
+OPENAI_MODEL=gpt-4o
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx
+SUPABASE_SERVICE_ROLE_KEY=eyJxxx
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 3. 初始化数据库
+
+在 Supabase SQL Editor 中运行 `supabase/migrations/001_initial_schema.sql`
+
+### 4. 启动开发服务器
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+打开 http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 项目结构
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  page.tsx                          # Landing page
+  layout.tsx                        # Root layout
+  trips/
+    new/page.tsx                    # Create trip form
+    [tripId]/
+      page.tsx                      # Trip detail (timeline)
+      analyzing/page.tsx            # Live analysis progress
+      report/page.tsx               # Risk report
+  api/trips/
+    route.ts                        # POST - create trip
+    [tripId]/
+      route.ts                      # GET - trip detail
+      upload/route.ts               # POST - file upload
+      analyze/route.ts              # POST - trigger AI analysis
+      report/route.ts               # GET - risk report
 
-## Learn More
+lib/
+  ai/
+    client.ts                       # OpenAI client wrapper
+    parse-trip.ts                   # parseTripInput function
+    risk-report.ts                  # generateRiskReport function
+    schemas.ts                      # Zod schemas + types
+  db/
+    supabase.ts                     # Supabase client
+    queries.ts                      # Database CRUD operations
 
-To learn more about Next.js, take a look at the following resources:
+types/
+  trip.ts                           # Shared TypeScript types
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+supabase/migrations/
+  001_initial_schema.sql            # Database schema + RLS
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API 路由
 
-## Deploy on Vercel
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/trips` | 创建行程 |
+| GET | `/api/trips/[tripId]` | 获取行程和结构化数据 |
+| POST | `/api/trips/[tripId]/upload` | 上传文件（PDF/图片） |
+| POST | `/api/trips/[tripId]/analyze` | AI 解析行程 + 生成风险报告 |
+| GET | `/api/trips/[tripId]/report` | 获取风险报告 |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 用户流程
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. 打开首页 → 点击"免费检测我的行程风险"
+2. 填写目的地、日期、出行信息
+3. 粘贴行程文本（如东京7日游计划）
+4. 点击"开始分析"
+5. 实时查看分析进度
+6. 查看完整风险报告
+
+## 风险评分维度
+
+1. 抵达当天行程过满
+2. 离境当天安排过满
+3. 每日活动数量过多
+4. 跨区移动过多
+5. 带父母/老人步行强度
+6. 亲子旅行休息时间
+7. 餐厅/景点预约时间紧
+8. 酒店入住空档不合理
+9. 语言能力弱 + 复杂沟通
+10. 缺少异常预案
+11. 晚间活动过多
+12. 没有缓冲时间
+
+## 部署到 Vercel
+
+```bash
+npm i -g vercel
+vercel
+```
+
+设置环境变量后即可部署。
+
+## 下一阶段计划
+
+- [ ] 接入 Google Maps API（距离/交通时间计算）
+- [ ] 接入 OpenWeather API（天气风险）
+- [ ] 实时航班状态监控
+- [ ] 旅行中实时守护模式
+- [ ] 用户注册和行程历史
+- [ ] PDF/图片 OCR 行程解析
+
+## License
+
+MIT
