@@ -101,7 +101,8 @@ export default function AnalyzingPage({ params }: { params: Promise<{ tripId: st
       <div className="max-w-xl mx-auto px-5 py-32 text-center">
         <div className="text-6xl mb-6">—</div>
         <h1 className="font-serif text-3xl font-medium mb-2">分析中断</h1>
-        <p className="body-lg mb-8">{error}</p>
+        <p className="body-lg mb-4">{error}</p>
+        <p className="text-sm text-[#86868b] mb-8 max-w-md mx-auto">如果 AI 没能完整识别行程，你可以稍后重试，或先精简无关说明后再次提交。</p>
         <div className="flex gap-3 justify-center">
           <button onClick={() => router.back()} className="btn-secondary font-sans">返回</button>
           <button onClick={handleRetry} disabled={retrying} className="btn-primary font-sans">
