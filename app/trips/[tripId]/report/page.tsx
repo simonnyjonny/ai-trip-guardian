@@ -233,6 +233,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
   const [shareLoading, setShareLoading] = useState(false)
   const [weather, setWeather] = useState<TripWeatherSummary | null>(null)
   const [packing, setPacking] = useState<PackingRecommendations | null>(null)
+  const [transferPlans, setTransferPlans] = useState<Array<Record<string, unknown>> | null>(null)
 
   useEffect(() => {
     params.then(async ({ tripId: id }) => {
@@ -250,6 +251,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
         const raw = reportData.report as unknown as Record<string, unknown>
         setWeather((raw.weather_summary as TripWeatherSummary) || null)
         setPacking((raw.packing_recommendations as PackingRecommendations) || null)
+        setTransferPlans((raw.transfer_plans as Array<Record<string, unknown>>) || null)
       } catch (err: unknown) { setError(err instanceof Error ? err.message : '加载失败') }
       finally { setLoading(false) }
     })
@@ -442,6 +444,87 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
             </div>
           )}
           <p className="text-[11px] text-[#86868b]/60 mt-3">天气建议基于可用天气预报生成，实际情况可能变化。请在出发前和当天以官方天气服务为准。</p>
+        </section>
+      )}
+
+      {/* ── Transfer Plans ── */}
+      {(transferPlans && transferPlans.length > 0) && (
+        <section className="mb-12">
+          <h2 className="font-serif text-2xl font-medium mb-1 tracking-[-0.02em]">机场 / 车站交通方案</h2>
+          <p className="text-sm text-[#86868b] mb-6 font-sans">模拟路线，请以实际交通为准。</p>
+          {transferPlans.map((plan: Record<string, unknown>, pi: number) => (
+            <div key={pi} className="card p-6 mb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <span className={`badge text-[11px] ${plan.scenario === 'arrival_to_hotel' ? 'bg-[#e3f2fd] text-[#1565c0]' : 'bg-[#fce4ec] text-[#c62828]'}`}>
+                  {plan.scenario === 'arrival_to_hotel' ? '抵达 → 酒店' : '酒店 → 离境'}
+                </span>
+                <h3 className="font-semibold font-sans">{plan.title as string}</h3>
+              </div>
+              <p className="text-sm text-[#86868b] mb-4">{plan.summary as string}</p>
+              <div className="flex gap-2 mb-3">
+                <button onClick={() => {
+                  const lines: string[] = [`交通方案：${plan.title}`, '', plan.summary as string, '']
+                  const opts = (plan.options as Array<Record<string, unknown>>)
+                  if (Array.isArray(opts)) {
+                    opts.forEach((o) => {
+                      lines.push(`${o.title}：${o.estimatedDurationMinutes}分钟，${o.estimatedCostText || ''}`)
+                      const steps = o.steps as Array<Record<string, string>>
+                      if (Array.isArray(steps)) steps.forEach(s => lines.push(`  - ${s.instruction}`))
+                    })
+                  }
+                  const scripts = plan.communicationScripts as Array<Record<string, string>>
+                  if (Array.isArray(scripts) && scripts.length > 0) {
+                    lines.push('', '沟通话术：')
+                    scripts.forEach(s => lines.push(`  ${s.chinese || ''}`))
+                  }
+                  navigator.clipboard.writeText(lines.join('\n'))
+                }} className="text-xs text-[#0071e3] font-medium font-sans hover:underline">复制交通方案</button>
+              </div>
+              {(plan.options as Array<Record<string, unknown>>)?.map((opt, oi) => (
+                <div key={oi} className="border border-[#f0f0f5] rounded-xl p-4 mb-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-[15px] font-sans">{opt.title as string}</span>
+                    <span className={`badge text-[11px] ${
+                      opt.complexity === 'low' ? 'bg-[#e8f5e9] text-[#2e7d32]' : opt.complexity === 'medium' ? 'bg-[#fff8e1] text-[#f9a825]' : 'bg-[#ffebee] text-[#c62828]'
+                    }`}>
+                      {opt.complexity === 'low' ? '简单' : opt.complexity === 'medium' ? '中等' : '复杂'}
+                    </span>
+                  </div>
+                  <div className="flex gap-3 text-xs text-[#86868b] mb-2 font-sans">
+                    {opt.estimatedDurationMinutes && <span>⏱ {opt.estimatedDurationMinutes}分钟</span>}
+                    {opt.estimatedCostText && <span>💰 {opt.estimatedCostText as string}</span>}
+                  </div>
+                  {(opt.recommendedFor as string[])?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {(opt.recommendedFor as string[]).map((r, i) => (
+                        <span key={i} className="text-[10px] bg-[#f0f7ff] text-[#0071e3] px-2 py-0.5 rounded-full">{r}</span>
+                      ))}
+                    </div>
+                  )}
+                  {(opt.steps as Array<Record<string, string>>)?.map((s, i) => (
+                    <p key={i} className="text-sm text-[#86868b] ml-3 mb-0.5">• {s.instruction}</p>
+                  ))}
+                  {(opt.warnings as string[])?.length > 0 && (
+                    <p className="text-xs text-[#ef6c00] mt-2">⚠️ {(opt.warnings as string[]).join('；')}</p>
+                  )}
+                  {opt.deepLink && (
+                    <a href={opt.deepLink as string} target="_blank" rel="noopener" className="text-[11px] text-[#0071e3] mt-2 inline-block hover:underline">打开地图导航 →</a>
+                  )}
+                </div>
+              ))}
+              {(plan.communicationScripts as Array<Record<string, string>>)?.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-[#f0f0f5]">
+                  <p className="text-xs font-semibold text-[#86868b] mb-2">沟通话术</p>
+                  {(plan.communicationScripts as Array<Record<string, string>>).map((s, i) => (
+                    <div key={i} className="flex gap-2 text-xs mb-1">
+                      <span className="text-[#86868b] shrink-0">{s.chinese}</span>
+                      {s.english && <span className="text-[#86868b]/50">| {s.english}</span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </section>
       )}
 

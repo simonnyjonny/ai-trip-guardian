@@ -62,6 +62,8 @@ import type { TripWeatherSummary, PackingRecommendations as PackingRecs } from "
 
 export type { TripWeatherSummary, PackingRecs as PackingRecommendations };
 
+import type { TransferPlan } from "@/lib/maps/types";
+
 export interface RiskReport {
   id: string;
   trip_id?: string;
@@ -75,4 +77,5 @@ export interface RiskReport {
   optimized_itinerary: OptimizedItineraryDay[];
   contingency_plans: ContingencyPlan[];
   communication_scripts: CommunicationScript[];
+  transfer_plans?: TransferPlan[];
 }

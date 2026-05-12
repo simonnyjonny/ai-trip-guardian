@@ -25,6 +25,11 @@ interface GenerateRiskReportParams {
     summary: string
     limitations: string[]
   }
+  transferPlans?: Array<{
+    scenario: string; title: string; origin: string; destination: string
+    summary: string; riskNotes: string[]
+    options: Array<{ title: string; mode: string; complexity: string; estimatedDurationMinutes?: number }>
+  }>
 }
 
 const PROVIDER = process.env.AI_PROVIDER || 'openai'
@@ -69,6 +74,10 @@ ${itineraryText}
 Trip title: ${parsedTrip.trip_title}
 Missing info: ${parsedTrip.missing_info.join('; ') || 'none'}
 
+${input.transferPlans && input.transferPlans.length > 0 ? `Transfer Plans:
+${input.transferPlans.map(p => `  ${p.scenario}: ${p.title} (${p.summary})`).join('\n')}
+` : ''}
+
 ${input.weatherSummary ? `Weather Forecast:
 Source: ${input.weatherSummary.forecastSource}
 Reliability: ${input.weatherSummary.forecastReliability}
@@ -89,6 +98,12 @@ If trip_region is outbound:
 - Consider passport, visa, airport transfer, language barriers
 - Generate English/local-language communication scripts
 - Mention overseas hotel late check-in, Uber/taxi, public transit
+
+If transferPlans are provided:
+- Incorporate transfer risks (airport/station-to-hotel) into recommendations and contingency plans.
+- For elderly or children, prefer taxi/ride-hailing over complex public transit.
+- For late-night arrival, recommend taxi or hotel transfer.
+- Mention whether public transit, taxi, ride-hailing, or self-drive is more appropriate based on traveler type.
 
 If weather data is provided:
 - Incorporate it into daily_analysis (weather risks for outdoor activities)

@@ -63,6 +63,17 @@ export default function DemoReport() {
       ))}
 
       {/* Weather */}
+      <h2 className="font-serif text-xl font-medium mb-4 mt-8">机场交通方案</h2>
+      <div className="card p-5 mb-4">
+        <span className="badge bg-[#e3f2fd] text-[#1565c0] text-[11px] mb-2">抵达 → 酒店</span>
+        <h3 className="font-semibold mb-1">从羽田机场到新宿酒店</h3>
+        <p className="text-sm text-[#86868b] mb-3">推荐打车，约 30 分钟 ¥200-400。深夜到达或带小孩建议打车，避免公共交通换乘。</p>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="card p-3 bg-[#f8fff8]"><p className="text-xs font-semibold">打车/网约车</p><p className="text-[11px] text-[#86868b]">⏱ ~30min 💰 ¥40-80</p><p className="text-[10px] text-[#34c759] mt-1">✓ 推荐</p></div>
+          <div className="card p-3"><p className="text-xs font-semibold">公共交通</p><p className="text-[11px] text-[#86868b]">⏱ ~50min 💰 ¥3-10</p><p className="text-[10px] text-[#ff9500] mt-1">⚠ 需换乘</p></div>
+        </div>
+      </div>
+
       <h2 className="font-serif text-xl font-medium mb-4 mt-8">天气与出行准备</h2>
       <div className="card p-5 mb-3">
         <p className="text-sm text-[#86868b] mb-3">东京 7月：炎热潮湿，最高 30°C，最低 23°C。降雨概率 45%。</p>

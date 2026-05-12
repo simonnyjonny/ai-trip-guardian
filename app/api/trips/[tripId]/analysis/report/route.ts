@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getTrip, getItineraryItems, setAnalysisStage, saveRiskReport } from '@/lib/db/queries'
 import { generateRiskReport } from '@/lib/ai/risk-report'
+import type { Trip } from '@/types/trip'
 import { getTripWeatherForecast } from '@/lib/weather/client'
 import { userError } from '@/lib/errors'
 import { trackEvent } from '@/lib/analytics'
+import { generateTransferPlans } from '@/lib/transfer/planner'
 import { supabaseAdmin } from '@/lib/db/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -54,6 +56,17 @@ export async function POST(
       weatherSummary = generateMockWeather(trip.destination)
     }
 
+    // Generate transfer plans (non-blocking)
+    let transferPlans
+    try {
+      trackEvent({ tripId, eventName: 'transfer_plan_generated' })
+      transferPlans = await generateTransferPlans({ trip: trip as Trip, items })
+    } catch (err) {
+      console.warn('[transfer] Failed:', err instanceof Error ? err.message : String(err))
+      trackEvent({ tripId, eventName: 'transfer_plan_failed' })
+      transferPlans = []
+    }
+
     const parsed = {
       trip_title: trip.title || trip.destination,
       destination: trip.destination,
@@ -82,6 +95,7 @@ export async function POST(
       },
       parsedTrip: parsed,
       weatherSummary,
+      transferPlans: transferPlans || [],
     })
 
     // Extract packing recommendations from AI output
@@ -96,7 +110,7 @@ export async function POST(
       limitations: weatherSummary.limitations,
     }
 
-    await saveRiskReport(tripId, reportResult, reportResult, weatherData, packingRecs)
+    await saveRiskReport(tripId, reportResult, reportResult, weatherData, packingRecs, transferPlans)
     await setAnalysisStage(tripId, 'completed')
 
     return NextResponse.json({ stage: 'completed', status: 'completed', weather: weatherData, packing: packingRecs })

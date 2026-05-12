@@ -239,6 +239,7 @@ export async function saveRiskReport(
   rawOutput: unknown,
   weatherSummary?: unknown,
   packingRecommendations?: unknown,
+  transferPlans?: unknown,
 ): Promise<RiskReport> {
   await deleteRiskReports(tripId)
 
@@ -260,6 +261,7 @@ export async function saveRiskReport(
       communication_scripts: report.communication_scripts,
       weather_summary: weatherSummary || {},
       packing_recommendations: packingRecommendations || {},
+      transfer_plans: transferPlans || [],
       raw_ai_output: rawOutput,
       created_at: new Date().toISOString(),
     })
