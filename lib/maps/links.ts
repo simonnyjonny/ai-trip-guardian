@@ -10,8 +10,9 @@ export function generateAmapSearchLink(keyword: string): string {
   return `https://uri.amap.com/search?keyword=${encodeURIComponent(keyword)}`
 }
 
-export function generateUberDeepLink(destination: string): string {
-  return `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=${encodeURIComponent(destination)}`
+export function generateUberDeepLink(origin?: string, destination?: string): string {
+  const dest = destination || origin || ''
+  return `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=${encodeURIComponent(dest)}`
 }
 
 export function generateRideHailingLinks(params: {
