@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getTrip, getItineraryItems, setAnalysisStage, saveRiskReport } from '@/lib/db/queries'
 import { generateRiskReport } from '@/lib/ai/risk-report'
 import type { Trip } from '@/types/trip'
+import type { TransferPlan } from '@/lib/maps/types'
 import { getTripWeatherForecast } from '@/lib/weather/client'
 import { userError } from '@/lib/errors'
 import { trackEvent } from '@/lib/analytics'
@@ -57,7 +58,7 @@ export async function POST(
     }
 
     // Generate transfer plans (non-blocking)
-    let transferPlans
+    let transferPlans: TransferPlan[] = []
     try {
       trackEvent({ tripId, eventName: 'transfer_plan_generated' })
       transferPlans = await generateTransferPlans({ trip: trip as Trip, items })
