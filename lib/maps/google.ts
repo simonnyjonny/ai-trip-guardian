@@ -32,7 +32,7 @@ export async function fetchGoogleRoute(params: {
     pros: ["最快", "直达", "实时路况"],
     cons: [],
     warnings: [],
-    deepLink: generateGoogleMapsLink(params.origin, params.destination),
+    dataQuality: "real_api",
     limitations: [],
   }
 
@@ -49,12 +49,12 @@ export async function fetchGoogleRoute(params: {
       estimatedDistanceKm: Math.round(leg.distance.value / 1000),
       complexity: "low",
       recommendedFor: ["首次出行", "英文可沟通"],
-      steps: [{ instruction: "Open Uber/Lyft app, set destination" }],
+      steps: [{ order: 1, mode: "ride_hailing" as const, instruction: "Open Uber/Lyft app, set destination" }],
       pros: ["直接在 app 叫车", "价格透明"],
       cons: ["需要网络", "高峰期加价"],
       warnings: ["确认 pickup 地点", "核对车牌号"],
       deepLink: generateUberDeepLink(params.origin, params.destination),
+      dataQuality: "real_api",
       limitations: [],
     },
   ]
-}

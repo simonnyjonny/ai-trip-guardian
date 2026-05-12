@@ -48,8 +48,9 @@ export async function fetchAmapRoute(params: {
     steps: (path.steps || []).map((s, i) => ({ order: i + 1, mode: "drive" as const, instruction: s.instruction })),
     pros: ["最快", "直达", "高德实时路况"],
     cons: ["高峰期可能拥堵", "费用较高"],
-    warnings: [],
+    warnings: ["请在官方出租车/网约车上车区上车，不要接受陌生人揽客。"],
     deepLink: generateAmapLink(params.origin, params.destination),
-    limitations: [],
+    dataQuality: "real_api",
+    limitations: ["路线和耗时以高德地图实时导航为准。"],
   }]
 }
