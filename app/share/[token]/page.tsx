@@ -94,7 +94,7 @@ export default function SharePage() {
       {/* Top risks */}
       <h2 className="font-serif text-xl font-medium mb-4">重要风险</h2>
       <div className="space-y-3 mb-8">
-        {(r.top_risks as Array<Record<string, string>>)?.map((risk, i) => (
+        {(r.top_risks as unknown as Array<{title:string;level:string;suggestion:string}>)?.map((risk, i) => (
           <div key={i} className="card p-4">
             <span className={`badge text-[11px] mb-2 ${riskChip[risk.level as RiskLevel]}`}>{riskLevelText[risk.level as RiskLevel]}</span>
             <h3 className="font-semibold text-[15px] mt-1 mb-1">{risk.title}</h3>
@@ -108,12 +108,12 @@ export default function SharePage() {
         <>
           <h2 className="font-serif text-xl font-medium mb-4">AI 推荐调整版行程</h2>
           <div className="space-y-4 mb-8">
-            {opt.map((day: Record<string, unknown>, i: number) => (
+            {opt.map((day: any, i: number) => (
               <div key={i} className="card p-5">
-                <h3 className="font-semibold mb-1">Day {day.day_index as number} · {day.theme as string}</h3>
-                <p className="text-sm text-[#86868b] mb-3">{day.risk_reduction_summary as string}</p>
+                <h3 className="font-semibold mb-1">Day {day.day_index} · {day.theme}</h3>
+                <p className="text-sm text-[#86868b] mb-3">{day.risk_reduction_summary}</p>
                 <div className="space-y-2">
-                  {(day.items as Array<Record<string, string>>)?.map((item, j) => (
+                  {(day.items as Array<any>)?.map((item: any, j: number) => (
                     <div key={j} className="flex gap-3 text-sm">
                       <span className="text-[#86868b] w-12 shrink-0">{item.time || '--:--'}</span>
                       <span className="font-medium">{item.title}</span>
@@ -123,7 +123,7 @@ export default function SharePage() {
                 </div>
                 <div className="mt-3 pt-3 border-t border-[#f0f0f5]">
                   <p className="text-xs text-[#86868b]">
-                    本日调整：{(day.changes_made as string[])?.join('；')}
+                    本日调整：{(day.changes_made as any[])?.join('；')}
                   </p>
                 </div>
               </div>

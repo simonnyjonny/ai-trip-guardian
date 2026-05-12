@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import type { Trip } from '@/types/trip'
-import type { RiskReport as RiskReportType } from '@/types/report'
+import type { RiskReport as RiskReportType, OptimizedItineraryDay, OptimizedItineraryItem } from '@/types/report'
 import { riskLevelText } from '@/lib/risk-ui'
 import type { RiskLevel } from '@/types/trip'
 
@@ -246,11 +246,11 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
     lines.push('', '【修改建议】')
     report.recommendations?.forEach((r) => lines.push(`- ${r.title}: ${r.details}`))
     lines.push('', '【AI 推荐调整版行程】')
-    const opt = report.optimized_itinerary
-    opt?.forEach((day) => {
+    const opt: OptimizedItineraryDay[] = report.optimized_itinerary || []
+    opt.forEach((day) => {
       lines.push(`Day ${day.day_index} · ${day.theme}`)
-      ;(day.items as Array<Record<string, string>>)?.forEach((it) => lines.push(`  ${it.time || '--:--'}  ${it.title}`))
-      lines.push(`  调整：${(day.changes_made as string[])?.join('；')}`)
+      day.items?.forEach((it: OptimizedItineraryItem) => lines.push(`  ${it.time || '--:--'}  ${it.title}`))
+      lines.push(`  调整：${day.changes_made?.join('；')}`)
     })
     lines.push('', '【沟通话术】')
     report.communication_scripts?.forEach((s) => lines.push(`- ${s.scenario}: ${s.chinese}`))
@@ -282,7 +282,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
   )
 
   const dims = report.dimension_scores
-  const opt = report.optimized_itinerary
+  const opt: OptimizedItineraryDay[] = report.optimized_itinerary || []
   const days = report.daily_analysis || []
 
   return (
@@ -376,7 +376,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
           <h2 className="font-serif text-2xl font-medium mb-1 tracking-[-0.02em]">AI 推荐调整版行程</h2>
           <p className="text-sm text-[#86868b] mb-6 font-sans">以下不是新的预订，而是基于当前安排生成的低风险重排建议。</p>
           <div className="space-y-4">
-            {(opt as Array<Record<string, unknown>>).map((day, i) => (
+            {opt.map((day, i) => (
               <motion.div key={i} custom={i} variants={cardAnim} initial="hidden" animate="visible"
                 className="card p-6 border-l-4 border-l-[#0071e3]">
                 <div className="flex items-center gap-3 mb-3">
@@ -385,7 +385,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
                 </div>
                 <p className="text-sm text-[#86868b] mb-4 font-sans">{day.risk_reduction_summary as string}</p>
                 <div className="space-y-2 mb-4">
-                  {(day.items as Array<Record<string, string>>)?.map((item, j) => (
+                  {day.items?.map((item: OptimizedItineraryItem, j: number) => (
                     <div key={j} className="flex gap-3 text-sm items-start group/item hover:bg-[#fafafa] rounded-lg p-1.5 -mx-1.5 transition-colors">
                       <span className="text-[#86868b] w-14 shrink-0 text-right tabular-nums font-sans">{item.time || '--:--'}</span>
                       <span className="text-[11px] bg-[#f5f5f7] px-1.5 py-0.5 rounded font-sans shrink-0 mt-0.5">{item.category || ''}</span>
@@ -397,7 +397,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
                 <div className="pt-3 border-t border-[#f0f0f5]">
                   <p className="text-xs text-[#0071e3] font-sans">
                     <span className="font-semibold">本日调整：</span>
-                    {(day.changes_made as string[])?.join('；')}
+                    {day.changes_made?.join('；')}
                   </p>
                 </div>
               </motion.div>
