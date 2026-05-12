@@ -6,11 +6,11 @@ const timeMap: Record<string, string | null> = {
 
 export function convertGeneratedItineraryToItems(generated: GeneratedItineraryDay[]): Array<{
   day_index: number; start_time: string | null; end_time: string | null
-  title: string; location_name: string | null; category: string; notes: string | null
+  title: string; location_name: string | null; address: string | null; category: string; notes: string | null
 }> {
   const result: Array<{
     day_index: number; start_time: string | null; end_time: string | null
-    title: string; location_name: string | null; category: string; notes: string | null
+    title: string; location_name: string | null; address: string | null; category: string; notes: string | null
   }> = []
 
   for (const day of generated) {
