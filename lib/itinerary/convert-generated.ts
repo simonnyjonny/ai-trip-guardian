@@ -21,6 +21,7 @@ export function convertGeneratedItineraryToItems(generated: GeneratedItineraryDa
         end_time: null,
         title: item.title,
         location_name: item.locationName || null,
+        address: null,
         category: item.category || 'activity',
         notes: [item.why, ...(item.notes || [])].filter(Boolean).join('；') || null,
       })
