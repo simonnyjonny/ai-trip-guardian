@@ -220,6 +220,8 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
   const [copied, setCopied] = useState('')
   const [shareUrl, setShareUrl] = useState('')
   const [shareLoading, setShareLoading] = useState(false)
+  const [weather, setWeather] = useState<Record<string, unknown> | null>(null)
+  const [packing, setPacking] = useState<Record<string, string[]> | null>(null)
 
   useEffect(() => {
     params.then(async ({ tripId: id }) => {
@@ -234,6 +236,8 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
         setTrip(tripData.trip)
         setReport(reportData.report)
         setReportId(reportData.report.id || '')
+        setWeather((reportData.report as Record<string, unknown>).weather_summary as Record<string, unknown> || null)
+        setPacking((reportData.report as Record<string, unknown>).packing_recommendations as Record<string, string[]> || null)
       } catch (err: unknown) { setError(err instanceof Error ? err.message : '加载失败') }
       finally { setLoading(false) }
     })
@@ -363,6 +367,67 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
               </motion.div>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* ── Weather ── */}
+      {(weather && weather.daily?.length > 0 || packing) && (
+        <section className="mb-12">
+          <h2 className="font-serif text-2xl font-medium mb-1 tracking-[-0.02em]">天气与出行准备</h2>
+          {weather && (
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2 mt-3">
+                <span className={`badge text-[11px] ${weather.forecastReliability === 'high' ? 'bg-[#e8f5e9] text-[#2e7d32]' : weather.forecastReliability === 'medium' ? 'bg-[#fff8e1] text-[#f9a825]' : 'bg-[#fff3e0] text-[#ef6c00]'}`}>
+                  可靠性：{weather.forecastReliability === 'high' ? '高' : weather.forecastReliability === 'medium' ? '中' : '低'}
+                </span>
+                <span className="text-xs text-[#86868b]">来源：{weather.forecastSource === 'openweather' ? 'OpenWeather' : weather.forecastSource === 'mock' ? '模拟数据' : '季节性建议'}</span>
+              </div>
+              <p className="text-sm text-[#86868b] mb-4">{weather.summary}</p>
+              {weather.daily?.length > 0 && (
+                <div className="grid sm:grid-cols-3 gap-2 mb-3">
+                  {weather.daily.slice(0, 6).map((d: any, i: number) => (
+                    <div key={i} className="card p-3 text-center">
+                      <p className="text-xs text-[#86868b] mb-1">{d.date?.slice(5)}</p>
+                      <p className="text-lg font-semibold">{d.maxTempC ?? '?'}°</p>
+                      <p className="text-xs text-[#86868b]">{d.minTempC ?? '?'}°</p>
+                      <p className="text-[11px] mt-1">{d.condition}</p>
+                      {d.precipitationProbability > 30 && <p className="text-[10px] text-[#0071e3] mt-0.5">降雨 {d.precipitationProbability}%</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {weather.limitations?.length > 0 && (
+                <p className="text-[11px] text-[#86868b]/70 italic">{weather.limitations[0]}</p>
+              )}
+            </div>
+          )}
+
+          {packing && Object.keys(packing).length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold font-sans">建议携带</h3>
+                <button onClick={() => {
+                  const lines: string[] = ['建议携带物品', '']
+                  const labels: Record<string, string> = { clothing: '衣物', footwear: '鞋子', rainGear: '雨具', sunProtection: '防晒', healthAndComfort: '健康与舒适', childOrElderlyNotes: '儿童/老人', destinationSpecificNotes: '目的地提示' }
+                  for (const [k, v] of Object.entries(packing)) { if (Array.isArray(v) && v.length > 0) { lines.push(`${labels[k] || k}：${v.join('、')}`) } }
+                  navigator.clipboard.writeText(lines.join('\n'))
+                }} className="text-xs text-[#0071e3] font-medium font-sans hover:underline shrink-0">复制行李建议</button>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {Object.entries(packing as Record<string, string[]>).map(([key, items]) => {
+                  if (!Array.isArray(items) || items.length === 0) return null
+                  const labels: Record<string, string> = { clothing: '衣物', footwear: '鞋子', rainGear: '雨具', sunProtection: '防晒', healthAndComfort: '健康与舒适', childOrElderlyNotes: '儿童/老人', destinationSpecificNotes: '目的地提示' }
+                  return (
+                    <div key={key} className="card p-3">
+                      <p className="text-xs font-semibold text-[#86868b] mb-1.5">{labels[key] || key}</p>
+                      <ul className="space-y-0.5">{items.map((item, j) => <li key={j} className="text-sm">{item}</li>)}</ul>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+          <p className="text-[11px] text-[#86868b]/60 mt-3">天气建议基于可用天气预报生成，实际情况可能变化。请在出发前和当天以官方天气服务为准。</p>
         </section>
       )}
 

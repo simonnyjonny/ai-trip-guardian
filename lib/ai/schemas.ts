@@ -84,6 +84,16 @@ export const communicationScriptSchema = z.object({
   local_language_name: z.string().optional(),
 });
 
+export const packingRecommendationsSchema = z.object({
+  clothing: z.array(z.string()).default([]),
+  footwear: z.array(z.string()).default([]),
+  rainGear: z.array(z.string()).default([]),
+  sunProtection: z.array(z.string()).default([]),
+  healthAndComfort: z.array(z.string()).default([]),
+  childOrElderlyNotes: z.array(z.string()).default([]),
+  destinationSpecificNotes: z.array(z.string()).default([]),
+});
+
 export const riskReportSchema = z.object({
   overall_score: z.number().int().min(0).max(100),
   overall_level: riskLevelSchema,
@@ -95,6 +105,7 @@ export const riskReportSchema = z.object({
   optimized_itinerary: z.array(optimizedItineraryDaySchema).default([]),
   contingency_plans: z.array(contingencyPlanSchema).default([]),
   communication_scripts: z.array(communicationScriptSchema).default([]),
+  packing_recommendations: packingRecommendationsSchema.optional(),
 });
 
 // API input schema

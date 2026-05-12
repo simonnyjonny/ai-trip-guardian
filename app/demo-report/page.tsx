@@ -62,6 +62,28 @@ export default function DemoReport() {
         </div>
       ))}
 
+      {/* Weather */}
+      <h2 className="font-serif text-xl font-medium mb-4 mt-8">天气与出行准备</h2>
+      <div className="card p-5 mb-3">
+        <p className="text-sm text-[#86868b] mb-3">东京 7月：炎热潮湿，最高 30°C，最低 23°C。降雨概率 45%。</p>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {['07-12','07-13','07-14','07-15','07-16','07-17'].map((d, i) => (
+            <div key={i} className="card p-2 text-center">
+              <p className="text-[10px] text-[#86868b]">{d}</p>
+              <p className="font-semibold">{28 + i}°</p>
+              <p className="text-[10px]">{['晴','多云','阵雨','多云','晴','阵雨'][i]}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[11px] text-[#86868b]/60 italic">当前为模拟天气数据，请以官方天气预报为准。</p>
+      </div>
+      <h3 className="text-lg font-semibold font-sans mb-2">建议携带</h3>
+      <div className="grid grid-cols-2 gap-2 mb-6">
+        {[{k:'衣物',v:'轻便T恤、薄外套、防晒衣、雨衣'},{k:'鞋子',v:'舒适步行鞋、凉拖鞋'},{k:'雨具',v:'折叠伞、防水背包罩'},{k:'防晒',v:'SPF50+防晒霜、遮阳帽、太阳镜'},{k:'健康',v:'补水水瓶、湿巾、儿童退烧药'},{k:'儿童',v:'午休小毯、零食、便携风扇'}].map(({k,v}) => (
+          <div key={k} className="card p-3"><p className="text-xs font-semibold text-[#86868b]">{k}</p><p className="text-sm">{v}</p></div>
+        ))}
+      </div>
+
       <div className="text-center py-8 border-t mt-8">
         <p className="text-lg text-[#86868b] mb-4">这是示例报告。你的真实行程将生成专属分析。</p>
         <Link href="/trips/new" className="btn-primary">开始检测我的行程</Link>

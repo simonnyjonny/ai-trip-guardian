@@ -58,6 +58,10 @@ export interface OptimizedItineraryDay {
   changes_made: string[];
 }
 
+import type { TripWeatherSummary, PackingRecommendations as PackingRecs } from "@/lib/weather/types";
+
+export type { TripWeatherSummary, PackingRecs as PackingRecommendations };
+
 export interface RiskReport {
   id: string;
   trip_id?: string;

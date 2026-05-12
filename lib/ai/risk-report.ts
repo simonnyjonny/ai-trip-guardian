@@ -16,6 +16,13 @@ interface GenerateRiskReportParams {
     specialNeeds: string[]
   }
   parsedTrip: ParsedTripInputSchema
+  weatherSummary?: {
+    forecastSource: string
+    forecastReliability: string
+    daily: Array<{ date: string; minTempC?: number; maxTempC?: number; condition: string; precipitationProbability?: number; windSpeedKph?: number; humidity?: number }>
+    summary: string
+    limitations: string[]
+  }
 }
 
 const PROVIDER = process.env.AI_PROVIDER || 'openai'
@@ -58,7 +65,23 @@ ${itineraryText}
 Trip title: ${parsedTrip.trip_title}
 Missing info: ${parsedTrip.missing_info.join('; ') || 'none'}
 
-Please analyze this trip and generate a comprehensive risk report.`
+${input.weatherSummary ? `Weather Forecast:
+Source: ${input.weatherSummary.forecastSource}
+Reliability: ${input.weatherSummary.forecastReliability}
+Summary: ${input.weatherSummary.summary}
+Daily:
+${input.weatherSummary.daily.map(d => `  ${d.date}: ${d.condition}, ${d.minTempC ?? '?'}-${d.maxTempC ?? '?'}°C, rain: ${d.precipitationProbability ?? '?'}%`).join('\n')}
+Limitations: ${input.weatherSummary.limitations.join('; ')}
+` : ''}
+
+Please analyze this trip and generate a comprehensive risk report.
+
+If weather data is provided:
+- Incorporate it into daily_analysis (weather risks for outdoor activities)
+- Include weather-related top_risks if relevant
+- Add weather contingency plans
+- Generate packing_recommendations with: clothing, footwear, rainGear, sunProtection, healthAndComfort, childOrElderlyNotes, destinationSpecificNotes
+- Do not overstate weather certainty. Note forecastReliability.`
 
   try {
     const result = await aiRequest<RiskReportSchema>({
