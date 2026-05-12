@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import type { Trip } from '@/types/trip'
-import type { RiskReport as RiskReportType, OptimizedItineraryDay, OptimizedItineraryItem } from '@/types/report'
+import type { RiskReport as RiskReportType, OptimizedItineraryDay, OptimizedItineraryItem, PackingRecommendations } from '@/types/report'
+import type { TripWeatherSummary } from '@/lib/weather/types'
 import { riskLevelText } from '@/lib/risk-ui'
 import type { RiskLevel } from '@/types/trip'
 
@@ -220,8 +221,8 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
   const [copied, setCopied] = useState('')
   const [shareUrl, setShareUrl] = useState('')
   const [shareLoading, setShareLoading] = useState(false)
-  const [weather, setWeather] = useState<Record<string, unknown> | null>(null)
-  const [packing, setPacking] = useState<Record<string, string[]> | null>(null)
+  const [weather, setWeather] = useState<TripWeatherSummary | null>(null)
+  const [packing, setPacking] = useState<PackingRecommendations | null>(null)
 
   useEffect(() => {
     params.then(async ({ tripId: id }) => {
@@ -236,8 +237,9 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
         setTrip(tripData.trip)
         setReport(reportData.report)
         setReportId(reportData.report.id || '')
-        setWeather((reportData.report as Record<string, unknown>).weather_summary as Record<string, unknown> || null)
-        setPacking((reportData.report as Record<string, unknown>).packing_recommendations as Record<string, string[]> || null)
+        const raw = reportData.report as unknown as Record<string, unknown>
+        setWeather((raw.weather_summary as TripWeatherSummary) || null)
+        setPacking((raw.packing_recommendations as PackingRecommendations) || null)
       } catch (err: unknown) { setError(err instanceof Error ? err.message : '加载失败') }
       finally { setLoading(false) }
     })
