@@ -35,7 +35,7 @@ export function generateFallbackRiskReport(params: {
     ],
     daily_analysis: days.map(d => ({
       day_index: d,
-      risk_level: (isRushed ? "medium_high" : "medium") as const,
+      risk_level: (isRushed ? ("medium_high" as const) : ("medium" as const)),
       estimated_walking_intensity: "medium" as const,
       issues: ["基础分析模式，未生成详细问题"],
       suggestions: ["确认活动时间", "预留交通缓冲", "关注天气变化"],
