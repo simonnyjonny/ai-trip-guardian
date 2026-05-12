@@ -81,7 +81,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
             className="font-serif text-2xl md:text-4xl text-white/90 font-medium tracking-[-0.02em] text-center leading-relaxed"
           >
             在出发之前，
@@ -141,7 +141,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
           >
             <h2 className="font-serif text-[clamp(2rem,5vw,4rem)] font-medium leading-[1.08] tracking-[-0.03em] text-white/95 mb-6">
               出发前，

@@ -117,7 +117,7 @@ export default function AnalyzingPage({ params }: { params: Promise<{ tripId: st
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
         className="mb-14"
       >
         <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-[#f0f5ff] flex items-center justify-center">

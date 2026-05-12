@@ -27,7 +27,7 @@ const cardAnim = {
   hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
   visible: (i: number) => ({
     opacity: 1, y: 0, filter: 'blur(0px)',
-    transition: { duration: 0.5, delay: 0.05 * i, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.5, delay: 0.05 * i, ease: [0.16, 1, 0.3, 1] as const },
   }),
 }
 
@@ -45,13 +45,13 @@ function ScoreRing({ score }: { score: number }) {
           strokeLinecap="round" strokeDasharray={circ}
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: off }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }} />
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const, delay: 0.3 }} />
       </svg>
       <div className="absolute translate-y-[-160px] w-[160px] h-[160px] flex flex-col items-center justify-center">
         <motion.span className="text-[3.5rem] font-bold tracking-tight leading-none font-sans"
           style={{ color }} initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}>
+          transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] as const }}>
           {score}
         </motion.span>
         <span className="text-sm font-semibold text-[#86868b] mt-1 font-sans">{label}</span>
@@ -311,14 +311,14 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
 
       {/* ── Score Card ── */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
         className="card p-8 md:p-12 mb-8 text-center">
         <ScoreRing score={report.overall_score} />
         <p className="body-lg max-w-xl mx-auto mt-6">{report.summary}</p>
         <div className="w-full max-w-md mx-auto bg-[#e8e8ed] rounded-full h-1.5 mt-6">
           <motion.div className="h-1.5 rounded-full" initial={{ width: 0 }}
             animate={{ width: `${report.overall_score}%` }}
-            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
             style={{ background: report.overall_score <= 30 ? '#34c759' : report.overall_score <= 60 ? '#ff9500' : report.overall_score <= 80 ? '#ff6d00' : '#ff3b30' }} />
         </div>
       </motion.div>

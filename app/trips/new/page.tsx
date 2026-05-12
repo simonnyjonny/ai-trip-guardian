@@ -40,7 +40,7 @@ const fadeUp = {
   hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
   visible: (i: number) => ({
     opacity: 1, y: 0, filter: 'blur(0px)',
-    transition: { duration: 0.6, delay: 0.08 * i, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.6, delay: 0.08 * i, ease: [0.16, 1, 0.3, 1] as const },
   }),
 }
 
@@ -108,7 +108,7 @@ export default function CreateTripPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] as const }}
             className="lg:col-span-3"
           >
             <div className="rounded-[32px] bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_24px_80px_rgba(0,0,0,0.06)] p-6 md:p-8 lg:p-10">
@@ -251,7 +251,7 @@ Day 2
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             className="lg:col-span-2 hidden lg:block"
           >
             <div className="sticky top-24 space-y-6">
