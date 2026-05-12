@@ -12,7 +12,7 @@ export async function POST(
       return NextResponse.json({ error: '报告不存在，请先完成分析' }, { status: 404 })
     }
 
-    const share = await createShare(tripId, (report as { id: string }).id)
+    const share = await createShare(tripId, report.id)
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
     return NextResponse.json({

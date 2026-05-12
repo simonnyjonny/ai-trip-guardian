@@ -59,6 +59,8 @@ export interface OptimizedItineraryDay {
 }
 
 export interface RiskReport {
+  id: string;
+  trip_id?: string;
   overall_score: number;
   overall_level: RiskLevel;
   summary: string;
