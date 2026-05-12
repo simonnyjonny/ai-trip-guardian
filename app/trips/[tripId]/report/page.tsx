@@ -7,6 +7,8 @@ import type { Trip } from '@/types/trip'
 import type { RiskReport as RiskReportType, OptimizedItineraryDay, OptimizedItineraryItem, PackingRecommendations } from '@/types/report'
 import type { TripWeatherSummary } from '@/lib/weather/types'
 import type { TransferPlan, RouteOption } from '@/lib/maps/types'
+import SpeakButton from '@/components/voice/SpeakButton'
+import { getSpeechLang } from '@/lib/voice/speech'
 import { riskLevelText } from '@/lib/risk-ui'
 import type { RiskLevel } from '@/types/trip'
 
@@ -515,9 +517,10 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
                 <div className="mt-3 pt-3 border-t border-[#f0f0f5]">
                   <p className="text-xs font-semibold text-[#86868b] mb-2">沟通话术</p>
                   {scripts.map((s, i) => (
-                    <div key={i} className="flex gap-2 text-xs mb-1">
+                    <div key={i} className="flex items-center gap-2 text-xs mb-1">
                       <span className="text-[#86868b] shrink-0">{s.chinese}</span>
                       {s.english && <span className="text-[#86868b]/50">| {s.english}</span>}
+                      <SpeakButton text={s.english || s.chinese} lang={s.localLanguageName === 'Japanese' ? 'ja-JP' : s.localLanguageName === 'Korean' ? 'ko-KR' : undefined} />
                     </div>
                   ))}
                 </div>
@@ -678,6 +681,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
                       </button>
                     </div>
                     <p className="text-sm leading-relaxed font-sans">{script.chinese}</p>
+                    <div className="mt-2"><SpeakButton text={script.chinese} lang="zh-CN" /></div>
                   </div>
                   {script.english && (
                     <div className="bg-[#f5f8ff] rounded-xl p-4 relative group/sc">
