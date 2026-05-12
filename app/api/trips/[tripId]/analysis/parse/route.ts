@@ -46,23 +46,23 @@ export async function POST(
 
     await setAnalysisStage(tripId, 'parsing')
 
-    const isWishMode = ((trip as Record<string, unknown>).input_mode as string) === 'wish'
+    const isWishMode = trip.input_mode === 'wish'
     let parsedItems: Array<{ day_index: number; start_time: string | null; end_time: string | null; title: string; location_name: string | null; address: string | null; category: string; notes: string | null }> = []
 
     if (isWishMode) {
-      const wishInput = ((trip as Record<string, unknown>).wish_input || {}) as Record<string, unknown>
+      const wi = trip.wish_input || {}
       const draft = await generateDraftItinerary({
-        destination: (wishInput.destination as string) || trip.destination,
-        travelers: wishInput.travelers as string || undefined,
-        pace: wishInput.pace as string || trip.pace,
-        durationDays: wishInput.durationDays as number || undefined,
-        travelStyles: (wishInput.travelStyles as string[]) || [],
-        mustVisitPlaces: (wishInput.mustVisitPlaces as string[]) || [],
-        optionalPlaces: (wishInput.optionalPlaces as string[]) || [],
-        thingsToDo: (wishInput.thingsToDo as string[]) || [],
-        avoid: (wishInput.avoid as string[]) || [],
-        specialNeeds: (wishInput.specialNeeds as string[]) || (trip.special_needs || []) as string[],
-        tripRegion: wishInput.tripRegion as string || trip.trip_region,
+        destination: wi.destination || trip.destination,
+        travelers: wi.travelers || undefined,
+        pace: wi.pace || trip.pace,
+        durationDays: wi.durationDays || undefined,
+        travelStyles: wi.travelStyles || [],
+        mustVisitPlaces: wi.mustVisitPlaces || [],
+        optionalPlaces: wi.optionalPlaces || [],
+        thingsToDo: wi.thingsToDo || [],
+        avoid: wi.avoid || [],
+        specialNeeds: wi.specialNeeds.length > 0 ? wi.specialNeeds : (trip.special_needs || []) as string[],
+        tripRegion: wi.tripRegion || trip.trip_region,
       })
 
       // Save generated itinerary
