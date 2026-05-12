@@ -23,6 +23,7 @@ export async function POST(
       rating: body.rating,
       comment: body.comment || null,
       email: body.email || null,
+      willingness_to_pay: body.willingnessToPay || null,
       created_at: new Date().toISOString(),
     })
 

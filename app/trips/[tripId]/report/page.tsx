@@ -93,9 +93,24 @@ function FeedbackButtons({ tripId, reportId, riskKey, onFeedback }: {
   )
 }
 
+function WillingnessPicker({ selected, onSelect }: { selected: string; onSelect: (v: string) => void }) {
+  const opts = ['不会付费', '$5', '$10', '$20', '$50+']
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {opts.map((v) => (
+        <button key={v} type="button" onClick={() => onSelect(v)}
+          className={`px-2.5 py-1 rounded-full text-[11px] font-medium font-sans transition-colors ${
+            selected === v ? 'bg-[#0071e3] text-white' : 'bg-[#f5f5f7] text-[#86868b] hover:bg-[#e8e8ed]'
+          }`}>{v}</button>
+      ))}
+    </div>
+  )
+}
+
 function BetaFeedback({ tripId }: { tripId: string }) {
   const [rating, setRating] = useState('')
   const [comment, setComment] = useState('')
+  const [willingness, setWillingness] = useState('')
   const [sent, setSent] = useState(false)
   const RATINGS = [
     ['very_useful', '非常有用'], ['somewhat_useful', '有一点用'],
@@ -107,7 +122,7 @@ function BetaFeedback({ tripId }: { tripId: string }) {
     try {
       await fetch(`/api/trips/${tripId}/beta-feedback`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, comment: comment || undefined }),
+        body: JSON.stringify({ rating, comment: comment || undefined, willingnessToPay: willingness || undefined }),
       })
       setSent(true)
     } catch { /* ignore */ }
@@ -129,7 +144,9 @@ function BetaFeedback({ tripId }: { tripId: string }) {
       <input type="text" placeholder="你希望它还帮你检查什么？（选填）" value={comment}
         onChange={(e) => setComment(e.target.value)}
         className="input-apple text-sm mb-2" />
-      <button onClick={submit} disabled={!rating} className="text-xs text-[#0071e3] font-medium font-sans disabled:opacity-30">提交反馈</button>
+      <p className="text-xs text-[#86868b] mb-2 font-sans">如果这份报告真的帮你避免旅行问题，你愿意为完整版本支付多少？</p>
+      <WillingnessPicker selected={willingness} onSelect={setWillingness} />
+      <button onClick={submit} disabled={!rating} className="text-xs text-[#0071e3] font-medium font-sans disabled:opacity-30 mt-2">提交反馈</button>
     </div>
   )
 }
@@ -373,7 +390,20 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
       {/* ── Optimized Itinerary ★ ── */}
       {opt && opt.length > 0 && (
         <section className="mb-12">
-          <h2 className="font-serif text-2xl font-medium mb-1 tracking-[-0.02em]">AI 推荐调整版行程</h2>
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="font-serif text-2xl font-medium tracking-[-0.02em]">AI 推荐调整版行程</h2>
+            <button onClick={() => {
+              const lines: string[] = ['AI 推荐调整版行程', '']
+              opt.forEach((day) => {
+                lines.push(`Day ${day.day_index} · ${day.theme}`)
+                lines.push(day.risk_reduction_summary)
+                day.items?.forEach((it: OptimizedItineraryItem) => lines.push(`  ${it.time || '--:--'}  ${it.title}`))
+                lines.push(`  调整：${day.changes_made?.join('；')}`)
+                lines.push('')
+              })
+              navigator.clipboard.writeText(lines.join('\n'))
+            }} className="text-xs text-[#0071e3] font-medium font-sans hover:underline shrink-0 ml-4">复制调整版行程</button>
+          </div>
           <p className="text-sm text-[#86868b] mb-6 font-sans">以下不是新的预订，而是基于当前安排生成的低风险重排建议。</p>
           <div className="space-y-4">
             {opt.map((day, i) => (

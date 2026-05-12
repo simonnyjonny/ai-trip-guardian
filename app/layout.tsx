@@ -14,8 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GlassHeader />
         <main>{children}</main>
         <footer className="border-t border-black/[0.04]">
-          <div className="max-w-6xl mx-auto px-5 py-10 text-center text-sm text-[#86868b]">
-            Trip Guardian — 你的旅行计划，值得被 AI 审视一次。
+          <div className="max-w-6xl mx-auto px-5 py-10 text-center text-sm text-[#86868b] space-y-2">
+            <p>Trip Guardian — 你的旅行计划，值得被 AI 审视一次。</p>
+            <p>
+              <a href="/privacy" className="underline underline-offset-4 hover:text-[#0071e3] transition-colors">隐私与数据保护</a>
+            </p>
           </div>
         </footer>
       </body>
