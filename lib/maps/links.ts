@@ -1,19 +1,30 @@
-/** Generate deep links for map providers */
-export function generateDeepLink(params: {
-  provider: "amap" | "google" | "mock"
-  origin: string
-  destination: string
-}): string {
-  switch (params.provider) {
-    case "amap":
-      return `https://uri.amap.com/navigation?from=${encodeURIComponent(params.origin)}&to=${encodeURIComponent(params.destination)}&mode=car`
-    case "google":
-      return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(params.origin)}&destination=${encodeURIComponent(params.destination)}&travelmode=driving`
-    default:
-      return `https://www.google.com/maps/search/${encodeURIComponent(params.destination)}`
-  }
+export function generateGoogleMapsLink(origin: string, destination: string, mode: "driving" | "transit" = "driving"): string {
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=${mode}`
 }
 
-export function generateUberDeepLink(origin: string, destination: string): string {
+export function generateAmapLink(origin: string, destination: string): string {
+  return `https://uri.amap.com/navigation?from=${encodeURIComponent(origin)}&to=${encodeURIComponent(destination)}&mode=car`
+}
+
+export function generateAmapSearchLink(keyword: string): string {
+  return `https://uri.amap.com/search?keyword=${encodeURIComponent(keyword)}`
+}
+
+export function generateUberDeepLink(destination: string): string {
   return `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=${encodeURIComponent(destination)}`
+}
+
+export function generateRideHailingLinks(params: {
+  origin: string
+  destination: string
+  isDomestic: boolean
+}): { uber?: string; googleMaps?: string; amap?: string } {
+  const links: { uber?: string; googleMaps?: string; amap?: string } = {}
+  if (params.isDomestic) {
+    links.amap = generateAmapLink(params.origin, params.destination)
+  } else {
+    links.uber = generateUberDeepLink(params.destination)
+    links.googleMaps = generateGoogleMapsLink(params.origin, params.destination, "driving")
+  }
+  return links
 }

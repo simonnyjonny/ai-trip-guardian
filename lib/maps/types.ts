@@ -1,13 +1,18 @@
 export type MapProviderName = "amap" | "google" | "mock"
 export type RouteMode = "taxi" | "driving" | "public_transport" | "walking" | "train" | "airport_bus" | "ride_hailing"
 export type RouteComplexity = "low" | "medium" | "high"
+export type RouteStepMode = "walk" | "subway" | "train" | "bus" | "taxi" | "ride_hailing" | "airport_bus" | "drive" | "transfer" | "wait" | "other"
 
 export interface RouteStep {
+  order: number
+  mode: RouteStepMode
   instruction: string
+  lineName?: string
+  departureStop?: string
+  arrivalStop?: string
   durationMinutes?: number
   distanceKm?: number
-  lineName?: string
-  stationName?: string
+  notes?: string[]
 }
 
 export interface RouteOption {
@@ -20,6 +25,8 @@ export interface RouteOption {
   estimatedDurationMinutes?: number
   estimatedDistanceKm?: number
   estimatedCostText?: string
+  pickupPointHint?: string
+  dropoffPointHint?: string
   complexity: RouteComplexity
   recommendedFor: string[]
   notRecommendedFor?: string[]
@@ -28,6 +35,12 @@ export interface RouteOption {
   cons: string[]
   warnings: string[]
   deepLink?: string
+  rideHailingLinks?: {
+    uber?: string
+    googleMaps?: string
+    amap?: string
+  }
+  dataQuality: "real_api" | "heuristic" | "mock"
   limitations: string[]
 }
 
