@@ -1,5 +1,6 @@
 import type { RouteOption } from "./types"
 import { generateGoogleMapsLink, generateUberDeepLink } from "./links"
+import { normalizeGoogleStep } from "./normalize"
 
 export async function fetchGoogleRoute(params: {
   origin: string
@@ -28,7 +29,7 @@ export async function fetchGoogleRoute(params: {
     estimatedDistanceKm: Math.round(leg.distance.value / 1000),
     complexity: hasElderly ? "low" : "low",
     recommendedFor: ["首次出行", "行李多", "深夜抵达"],
-    steps: (leg.steps || []).map(s => ({ instruction: s.html_instructions.replace(/<[^>]+>/g, "") })),
+    steps: (leg.steps || []).map((s, i) => normalizeGoogleStep(s, i)),
     pros: ["最快", "直达", "实时路况"],
     cons: [],
     warnings: [],
