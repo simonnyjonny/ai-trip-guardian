@@ -114,7 +114,7 @@ export async function POST(
     await saveRiskReport(tripId, reportResult, reportResult, weatherData, packingRecs, transferPlans)
     await setAnalysisStage(tripId, 'completed')
 
-    return NextResponse.json({ stage: 'completed', status: 'completed', weather: weatherData, packing: packingRecs })
+    return NextResponse.json({ stage: 'completed', status: 'completed', weather: weatherData, packing: packingRecs, transferPlans })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : '分析失败'
     await setAnalysisStage(tripId, 'failed', message).catch(() => {})
