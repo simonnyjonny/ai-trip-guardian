@@ -116,8 +116,14 @@ export async function POST(
 
     return NextResponse.json({ stage: 'completed', status: 'completed', weather: weatherData, packing: packingRecs, transferPlans })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : '分析失败'
-    await setAnalysisStage(tripId, 'failed', message).catch(() => {})
-    return NextResponse.json({ error: message }, { status: 500 })
+    const errMsg = error instanceof Error ? error.message : String(error)
+    const userMsg = errMsg.includes('JSON') || errMsg.includes('Unexpected token')
+      ? 'AI 返回格式异常。请点击重新分析。'
+      : errMsg.includes('provider') || errMsg.includes('429') || errMsg.includes('500')
+        ? 'AI 服务暂时不可用，请稍后重试。'
+        : '报告生成失败，我们已记录问题。请稍后重试。'
+    console.error('[report] Failed:', errMsg)
+    await setAnalysisStage(tripId, 'failed', userMsg).catch(() => {})
+    return NextResponse.json({ error: userMsg }, { status: 500 })
   }
 }

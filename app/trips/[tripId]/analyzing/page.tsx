@@ -56,7 +56,10 @@ export default function AnalyzingPage({ params }: { params: Promise<{ tripId: st
       await new Promise((r) => setTimeout(r, 600))
       router.push(`/trips/${tripId}/report`)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : '分析失败，请稍后重试。')
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.includes('JSON') || msg.includes('Unexpected token')) setError('AI 返回格式异常。点击重新分析，系统将尝试基础解析。')
+      else if (msg.includes('provider') || msg.includes('429') || msg.includes('500')) setError('AI 服务暂时不可用，请稍后重试。')
+      else setError(msg || '分析失败，请稍后重试。')
     }
   }, [router])
 

@@ -65,8 +65,15 @@ export async function POST(
 
     return NextResponse.json({ stage: 'parsed', items })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : '分析失败'
-    await setAnalysisStage(tripId, 'failed', message).catch(() => {})
-    return NextResponse.json({ error: message }, { status: 500 })
+    const errMsg = error instanceof Error ? error.message : String(error)
+    // Never expose raw AI/JSON errors to users
+    const userMsg = errMsg.includes('JSON') || errMsg.includes('Unexpected token') || errMsg.includes('not valid')
+      ? 'AI 没能完整识别这份行程。请点击重新分析，系统将尝试基础解析。'
+      : errMsg.includes('provider') || errMsg.includes('429') || errMsg.includes('500') || errMsg.includes('fetch')
+        ? 'AI 服务暂时不可用。请稍后重试。'
+        : 'AI 暂时没能完成分析，请稍后重试。'
+    console.error('[parse] Failed:', errMsg)
+    await setAnalysisStage(tripId, 'failed', userMsg).catch(() => {})
+    return NextResponse.json({ error: userMsg }, { status: 500 })
   }
 }
