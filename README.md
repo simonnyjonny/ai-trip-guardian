@@ -135,23 +135,40 @@ supabase/migrations/
 11. 晚间活动过多
 12. 没有缓冲时间
 
-## 部署到 Vercel
+## 部署模式
 
+### Vercel (海外 Beta)
 ```bash
-npm i -g vercel
 vercel
 ```
+配置所有环境变量后部署。生产 URL: https://ai-trip-guardian.vercel.app
 
-设置环境变量后即可部署。
+### 中国访问
+Vercel `.vercel.app` 域名在中国大陆可能不稳定。
+- 短期: 绑定自定义域名
+- 中期: 中国镜像站 (EdgeOne Pages / 阿里云 ESA)
+- 长期: ICP 备案 + 国内服务器
+详见 [DEPLOYMENT_CHINA.md](DEPLOYMENT_CHINA.md)
 
-## 下一阶段计划
+### Docker / 自部署
+```bash
+docker build -t ai-trip-guardian .
+docker run -p 3000:3000 --env-file .env.local ai-trip-guardian
+```
 
-- [ ] 接入 Google Maps API（距离/交通时间计算）
-- [ ] 接入 OpenWeather API（天气风险）
-- [ ] 实时航班状态监控
-- [ ] 旅行中实时守护模式
-- [ ] 用户注册和行程历史
-- [ ] PDF/图片 OCR 行程解析
+### 健康检查
+`GET /api/health` — 用于确认服务正常，不泄露任何密钥。
+
+### Provider 策略
+国内优先高德天气/地图/DeepSeek AI，出境优先 OpenWeather/Google Maps。
+详见 [PROVIDER_STRATEGY.md](PROVIDER_STRATEGY.md)
+
+## 当前 Sprint 状态
+- ✅ Sprint 0-4: MVP + stability + beta launch + Vercel deploy
+- ✅ Sprint 5: Product validation & trust
+- ✅ Sprint 6: Weather Guardian (amap/openweather/mock)
+- ✅ Sprint 6.5: China access & deployment readiness
+- ⏳ Sprint 7: Airport/Station Transfer Guardian (planned)
 
 ## License
 

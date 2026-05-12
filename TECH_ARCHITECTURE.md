@@ -73,3 +73,23 @@ waitlist_signups · users
 - agent_runs.input 脱敏 (redact.ts)
 - 分享页不暴露 raw_input
 - 删除 CASCADE 清除全部关联数据
+
+## 部署架构
+
+```
+海外 Beta: Vercel (vercel.app)
+中国站:   EdgeOne Pages / 阿里云 ESA / Docker 自部署
+数据库:   Supabase PostgreSQL (新加坡/日本节点)
+AI:       DeepSeek v4 (国内可用)
+天气:     高德 (国内) / OpenWeather (出境)
+```
+
+详见 [DEPLOYMENT_CHINA.md](DEPLOYMENT_CHINA.md) 和 [PROVIDER_STRATEGY.md](PROVIDER_STRATEGY.md)
+
+## 健康检查
+
+`GET /api/health` — 返回 `{ok, app, region, timestamp, providers}`，不泄露密钥。
+
+## Docker
+
+`output: "standalone"` — 支持 Vercel + Docker 双部署模式。
