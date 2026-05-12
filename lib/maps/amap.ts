@@ -45,7 +45,7 @@ export async function fetchAmapRoute(params: {
     estimatedCostText: `约 ¥${Math.round(distanceKm * 3)}-${Math.round(distanceKm * 5)}`,
     complexity: hasElderly ? "low" : "low",
     recommendedFor: ["带老人", "带孩子", "行李多", "首次出行"],
-    steps: (path.steps || []).map(s => ({ instruction: s.instruction })),
+    steps: (path.steps || []).map((s, i) => ({ order: i + 1, mode: "drive" as const, instruction: s.instruction })),
     pros: ["最快", "直达", "高德实时路况"],
     cons: ["高峰期可能拥堵", "费用较高"],
     warnings: [],
