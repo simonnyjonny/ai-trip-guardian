@@ -216,7 +216,7 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
         const reportData = await reportRes.json()
         setTrip(tripData.trip)
         setReport(reportData.report)
-        setReportId((reportData.report as Record<string, string>).id || '')
+        setReportId(reportData.report.id || '')
       } catch (err: unknown) { setError(err instanceof Error ? err.message : '加载失败') }
       finally { setLoading(false) }
     })
@@ -240,14 +240,13 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
       `总体风险：${report.overall_score}/100 (${riskLevelText[report.overall_level]})`, '',
       report.summary, '', '【维度评分】',
     ]
-    const dims = (report as Record<string, unknown>).dimension_scores as Record<string, number> | undefined
-    if (dims) for (const [k, v] of Object.entries(dims)) lines.push(`  ${dimLabels[k] || k}: ${v}/100`)
+    if (report.dimension_scores) for (const [k, v] of Object.entries(report.dimension_scores)) lines.push(`  ${dimLabels[k] || k}: ${v}/100`)
     lines.push('', '【重要风险】')
     report.top_risks?.forEach((r, i) => lines.push(`${i + 1}. [${riskLevelText[r.level]}] ${r.title}\n   ${r.suggestion}`))
     lines.push('', '【修改建议】')
     report.recommendations?.forEach((r) => lines.push(`- ${r.title}: ${r.details}`))
     lines.push('', '【AI 推荐调整版行程】')
-    const opt = (report as Record<string, unknown>).optimized_itinerary as Array<Record<string, unknown>> | undefined
+    const opt = report.optimized_itinerary
     opt?.forEach((day) => {
       lines.push(`Day ${day.day_index} · ${day.theme}`)
       ;(day.items as Array<Record<string, string>>)?.forEach((it) => lines.push(`  ${it.time || '--:--'}  ${it.title}`))
@@ -282,8 +281,8 @@ export default function ReportPage({ params }: { params: Promise<{ tripId: strin
     </div>
   )
 
-  const dims = (report as Record<string, unknown>).dimension_scores as Record<string, number> | undefined
-  const opt = (report as Record<string, unknown>).optimized_itinerary as Array<Record<string, unknown>> | undefined
+  const dims = report.dimension_scores
+  const opt = report.optimized_itinerary
   const days = report.daily_analysis || []
 
   return (

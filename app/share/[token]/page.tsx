@@ -54,10 +54,11 @@ export default function SharePage() {
     </div>
   )
 
-  const r = data.report as Record<string, unknown>
-  const t = data.trip
-  const dims = (r.dimension_scores || {}) as Record<string, number>
-  const opt = (r.optimized_itinerary || []) as Array<Record<string, unknown>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const r: any = data.report
+  const t: any = data.trip
+  const dims = r.dimension_scores || {}
+  const opt = r.optimized_itinerary || []
 
   return (
     <div className="max-w-3xl mx-auto px-5 py-10 md:py-16">
