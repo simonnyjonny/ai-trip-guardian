@@ -34,12 +34,13 @@ export function generateFallbackDraftItinerary(wishInput: {
   // Middle days
   for (let d = 2; d < days; d++) {
     const dayPlaces = places.slice(((d - 2) * maxPerDay) % places.length, ((d - 2) * maxPerDay + maxPerDay) % places.length || places.length)
-    const items = dayPlaces.map((p, i) => ({
+    const items: Array<{ timeOfDay: string; title: string; category: string; why: string; estimatedIntensity: string; notes: string[] }> = dayPlaces.map((p, i) => ({
       timeOfDay: i === 0 ? ('morning' as const) : ('afternoon' as const),
       title: p,
-      category: 'activity' as const,
+      category: 'activity',
       why: `安排在 Day ${d} 减少跨区移动。`,
-      estimatedIntensity: 'medium' as const,
+      estimatedIntensity: 'medium',
+      notes: [],
     }))
     // Add rest
     if (isRelaxed || hasKids || hasElderly) {
