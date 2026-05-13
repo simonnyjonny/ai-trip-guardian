@@ -6,7 +6,7 @@ export type GeneratedItineraryTimeOfDay = "morning" | "late_morning" | "afternoo
 
 export interface GeneratedItineraryItem {
   timeOfDay?: GeneratedItineraryTimeOfDay; title: string; locationName?: string | null;
-  category: ItineraryCategory; why: string; estimatedIntensity?: GeneratedItineraryIntensity; notes?: string[];
+  category: ItineraryCategory; why: string; estimatedIntensity?: GeneratedItineraryIntensity; notes: string[];
 }
 
 export interface GeneratedItineraryDay {
