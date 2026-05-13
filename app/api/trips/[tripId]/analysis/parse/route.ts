@@ -82,9 +82,9 @@ export async function POST(
         specialNeeds: (trip.special_needs || []) as string[],
       })
       parsedItems = parsed.itinerary_items.map((item) => ({
-        day_index: item.day_index, start_time: item.start_time, end_time: item.end_time,
-        title: item.title, location_name: item.location_name, address: item.address || null,
-        category: item.category, notes: item.notes,
+        day_index: item.day_index, start_time: item.start_time ?? null, end_time: item.end_time ?? null,
+        title: item.title, location_name: item.location_name ?? null, address: item.address ?? null,
+        category: item.category ?? 'activity', notes: item.notes ?? null,
       }))
     }
 
