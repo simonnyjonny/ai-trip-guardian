@@ -1,6 +1,19 @@
 export type TripInputMode = "itinerary" | "wish";
 export type TripRegion = "domestic" | "outbound" | "auto";
 
+export type GeneratedItineraryIntensity = "low" | "medium" | "high";
+export type GeneratedItineraryTimeOfDay = "morning" | "late_morning" | "afternoon" | "evening" | "flexible";
+
+export interface GeneratedItineraryItem {
+  timeOfDay?: GeneratedItineraryTimeOfDay; title: string; locationName?: string | null;
+  category: ItineraryCategory; why: string; estimatedIntensity?: GeneratedItineraryIntensity; notes?: string[];
+}
+
+export interface GeneratedItineraryDay {
+  dayIndex: number; theme: string; userWishesSatisfied: string[];
+  items: GeneratedItineraryItem[]; restBuffers: string[]; riskAvoidanceNotes: string[];
+}
+
 export interface TripWishInput {
   destination: string; startDate?: string | null; endDate?: string | null;
   durationDays?: number | null; travelers?: string | null;

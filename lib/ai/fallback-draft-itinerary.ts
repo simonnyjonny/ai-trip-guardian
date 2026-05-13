@@ -1,4 +1,4 @@
-import type { GeneratedItineraryDay, GeneratedItineraryItem, GeneratedItineraryTimeOfDay, GeneratedItineraryIntensity, ItineraryCategory } from '@/lib/ai/schemas'
+import type { GeneratedItineraryDay, GeneratedItineraryItem, GeneratedItineraryTimeOfDay, GeneratedItineraryIntensity, ItineraryCategory } from '@/types/trip'
 
 function item(params: {
   timeOfDay?: GeneratedItineraryTimeOfDay; title: string; locationName?: string | null
