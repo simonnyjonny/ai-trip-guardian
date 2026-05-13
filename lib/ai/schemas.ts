@@ -134,7 +134,7 @@ export const generatedItineraryItemSchema = z.object({
   category: itineraryCategorySchema.default("activity"),
   why: z.string(),
   estimatedIntensity: z.enum(["low", "medium", "high"]).optional(),
-  notes: z.array(z.string()).default([]),
+  notes: z.array(z.string()).optional().default([]),
 });
 
 export const generatedItineraryDaySchema = z.object({

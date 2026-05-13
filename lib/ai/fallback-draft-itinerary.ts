@@ -23,9 +23,9 @@ export function generateFallbackDraftItinerary(wishInput: {
     theme: '抵达与休息',
     userWishesSatisfied: ['轻松慢游'],
     items: [
-      { timeOfDay: 'afternoon', title: `抵达${wishInput.destination}`, category: 'flight', why: '抵达日减少活动，先适应时区和气候。', estimatedIntensity: 'low' },
-      { timeOfDay: 'afternoon', title: '酒店入住与休息', category: 'hotel', why: '入住后休息，避免疲劳累积。', estimatedIntensity: 'low' },
-      { timeOfDay: 'evening', title: '酒店附近轻松晚餐', category: 'restaurant', why: '不安排远距离活动，避免第一天过累。', estimatedIntensity: 'low' },
+      { timeOfDay: 'afternoon', title: `抵达${wishInput.destination}`, category: 'flight', why: '抵达日减少活动，先适应时区和气候。', estimatedIntensity: 'low', notes: [] },
+      { timeOfDay: 'afternoon', title: '酒店入住与休息', category: 'hotel', why: '入住后休息，避免疲劳累积。', estimatedIntensity: 'low', notes: [] },
+      { timeOfDay: 'evening', title: '酒店附近轻松晚餐', category: 'restaurant', why: '不安排远距离活动，避免第一天过累。', estimatedIntensity: 'low', notes: [] },
     ],
     restBuffers: hasKids ? ['下午保留午休时间'] : ['下午不安排景点'],
     riskAvoidanceNotes: ['避免抵达日疲劳'],
@@ -43,7 +43,7 @@ export function generateFallbackDraftItinerary(wishInput: {
     }))
     // Add rest
     if (isRelaxed || hasKids || hasElderly) {
-      items.push({ timeOfDay: 'afternoon', title: '休息与自由时间', category: 'rest', why: '保留体力，避免连续高强度活动。', estimatedIntensity: 'low' })
+      items.push({ timeOfDay: 'afternoon', title: '休息与自由时间', category: 'rest', why: '保留体力，避免连续高强度活动。', estimatedIntensity: 'low', notes: [] })
     }
     result.push({
       dayIndex: d,
@@ -61,8 +61,8 @@ export function generateFallbackDraftItinerary(wishInput: {
     theme: '轻松离境',
     userWishesSatisfied: ['轻松返回'],
     items: [
-      { timeOfDay: 'morning', title: '退房', category: 'hotel', why: '离境日不安排远距离活动。', estimatedIntensity: 'low' },
-      { timeOfDay: 'afternoon', title: `前往机场/车站`, category: 'transport', why: '预留足够时间，不赶不急。', estimatedIntensity: 'low' },
+      { timeOfDay: 'morning', title: '退房', category: 'hotel', why: '离境日不安排远距离活动。', estimatedIntensity: 'low', notes: [] },
+      { timeOfDay: 'afternoon', title: `前往机场/车站`, category: 'transport', why: '预留足够时间，不赶不急。', estimatedIntensity: 'low', notes: [] },
     ],
     restBuffers: [],
     riskAvoidanceNotes: ['离境日避免远距离景点', '提前出发预留交通时间'],
